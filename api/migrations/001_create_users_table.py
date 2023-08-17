@@ -3,13 +3,12 @@ steps = [
         # "Up" SQL statement
         """
         CREATE TABLE users (
-            id SERIAL NOT NULL UNIQUE,
-            first TEXT NOT NULL,
-            last TEXT NOT NULL,
-            avatar TEXT NOT NULL,
+            id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+            first_name TEXT NOT NULL,
+            last_name TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             username TEXT NOT NULL UNIQUE,
-            referrer_id INTEGER REFERENCES users("id") ON DELETE CASCADE
+            password TEXT NOT NULL UNIQUE
     );
         """,
         # "Down" SQL statement

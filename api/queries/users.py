@@ -5,12 +5,14 @@ from pydantic import BaseModel
 
 pool = ConnectionPool(conninfo=os.environ["DATABASE_URL"])
 
+
 class UserOut(BaseModel):
     id: int
-    first: str
-    last: str
+    first_name: str
+    last_name: str
     email: str
     username: str
+    password: str
 
 
 class UserListOut(BaseModel):
@@ -18,10 +20,11 @@ class UserListOut(BaseModel):
 
 
 class UserIn(BaseModel):
-    first: str
-    last: str
+    first_name: str
+    last_name: str
     email: str
     username: str
+    password: str
 
 
 class UserQueries:
@@ -30,10 +33,10 @@ class UserQueries:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT id, first, last,
-                        email, username
+                    SELECT id, first_name, last_name,
+                        email, username, password
                     FROM users
-                    ORDER BY last, first
+                    ORDER BY last_name, first_name
                 """
                 )
 
@@ -43,7 +46,6 @@ class UserQueries:
                     for i, column in enumerate(cur.description):
                         record[column.name] = row[i]
                     results.append(UserOut(**record))
-
                 return results
 
     def get_user(self, id) -> UserOut:
@@ -51,8 +53,8 @@ class UserQueries:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT id, first, last,
-                        email, username
+                    SELECT id, first_name, last_name,
+                        email, username, password
                     FROM users
                     WHERE id = %s
                 """,
@@ -72,16 +74,17 @@ class UserQueries:
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 params = [
-                    data.first,
-                    data.last,
+                    data.first_name,
+                    data.last_name,
                     data.email,
                     data.username,
+                    data.password,
                 ]
                 cur.execute(
                     """
-                    INSERT INTO users (first, last, email, username)
-                    VALUES (%s, %s, %s, %s)
-                    RETURNING id, first, last, email, username
+                    INSERT INTO users (first_name, last_name, email, username, password)
+                    VALUES (%s, %s, %s, %s, %s)
+                    RETURNING id, first_name, last_name, email, username, password
                     """,
                     params,
                 )
