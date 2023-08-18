@@ -1,28 +1,31 @@
 import os
 from queries.pool import pool
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
+from datetime import date
 
 class CategoryOut(BaseModel):
-    id: int
+    expense_category_id: int
     name: str
 
 
 class ExpenseOut(BaseModel):
     id: int
-    amount: float
+    expense_amount: float
     date: date
     category: CategoryOut
     username: str
+    description: Optional[str]
 
 class ExpenseListOut(BaseModel):
     expenses: List[ExpenseOut]
 
 class ExpenseIn(BaseModel):
-    amount: float
+    expense_amount: float
     date: date
-    category_id: int
+    category: CategoryOut
     username: str
+    description: Optional[str]
 
 class ExpenseQueries:
 
@@ -32,10 +35,10 @@ class ExpenseQueries:
                 cur.execute(
                 """
                 SELECT
-                    e.id, e.amount, e.date,
-                    c.id as category_id, c.name as category_name
+                    e.id, e.amount, e.date, e.description,
+                    c.id as expense_category_id,
                 FROM expenses e
-                JOIN categories c ON e.category_id = c.id
+                JOIN categories c ON e.expense_category_id = c.id
                 ORDER BY date DESC
             """
                 )
