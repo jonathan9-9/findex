@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel
 from queries.pool import pool
 from fastapi.responses import JSONResponse
@@ -10,6 +10,8 @@ from queries.expenses import (
     ExpenseIn,
     ExpenseListOut,
     ExpenseQueries,
+    ExpenseUpdate,
+    CategoryOut,
 )
 
 router = APIRouter()
@@ -32,3 +34,20 @@ def get_expenses(user_id: int, queries: ExpenseQueries = Depends()):
         raise HTTPException(404, f"No expenses found for user {user_id}")
 
     return ExpenseListOut(expenses=expenses)
+
+
+@router.put("/expenses/{expense_id}", response_model=dict)
+def update_expense(
+    expense_id: int,
+    expense: ExpenseUpdate,
+    queries: ExpenseQueries = Depends()
+):
+    return queries.update_expense(expense_id, expense)
+
+
+@router.delete("/expenses/{expense_id}", response_model=dict)
+def delete_expense(
+    expense_id: int,
+    queries: ExpenseQueries = Depends()
+):
+    return queries.delete_expense(expense_id)
