@@ -3,12 +3,12 @@ steps = [
         # "Up" SQL statement
         """
         CREATE TABLE users (
-            id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            username TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL UNIQUE
+            id SERIAL PRIMARY KEY NOT NULL,
+            first_name VARCHAR(100) NOT NULL,
+            last_name VARCHAR(100) NOT NULL,
+            email VARCHAR(100) NOT NULL UNIQUE,
+            username VARCHAR(100) NOT NULL UNIQUE,
+            hashed_password VARCHAR(100) NOT NULL
     );
         """,
         # "Down" SQL statement

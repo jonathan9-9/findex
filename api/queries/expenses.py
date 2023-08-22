@@ -4,6 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import date
 
+
 class CategoryOut(BaseModel):
     expense_category_id: int
     name: str
@@ -17,8 +18,10 @@ class ExpenseOut(BaseModel):
     username: str
     description: Optional[str]
 
+
 class ExpenseListOut(BaseModel):
     expenses: List[ExpenseOut]
+
 
 class ExpenseIn(BaseModel):
     expense_amount: float
@@ -27,13 +30,13 @@ class ExpenseIn(BaseModel):
     username: str
     description: Optional[str]
 
-class ExpenseQueries:
 
+class ExpenseQueries:
     def get_all_expenses(self) -> ExpenseListOut:
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                """
+                    """
                 SELECT
                     e.id, e.amount, e.date, e.description,
                     c.id as expense_category_id,
@@ -43,7 +46,7 @@ class ExpenseQueries:
             """
                 )
 
-                results=[]
+                results = []
                 for row in cur.fetchall():
                     record = {}
                     for i, column in enumerate(cur.description):
@@ -52,8 +55,6 @@ class ExpenseQueries:
 
                 return ExpenseListOut(**record)
 
+    # def create_expense(self, data: ExpenseIn):
 
-    def create_expense(self, data: ExpenseIn):
-
-
-    def delete_expense(self, expense_id):
+    # def delete_expense(self, expense_id):
