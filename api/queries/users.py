@@ -55,7 +55,7 @@ class UserQueries:
                     results.append(UserOut(**record))
                 return results
 
-    def get_user(self, username: str) -> UserOut | None:
+    def get_user(self, username: str) -> UserOutWithPassword | None:
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -64,7 +64,7 @@ class UserQueries:
                         email, username, hashed_password
                     FROM users
                     WHERE username = %s
-                """,
+                    """,
                     [username],
                 )
 
@@ -78,40 +78,10 @@ class UserQueries:
                             record = {}
                             for i, column in enumerate(cur.description):
                                 record[column.name] = row[i]
-
-                        return UserOutWithPassword(**record)
+                            return UserOutWithPassword(**record)
                     except Exception as e:
                         raise Exception("Error:", e)
 
-    # def create_user(self, data) -> UserOut:
-    #     with pool.connection() as conn:
-    #         with conn.cursor() as cur:
-    #             params = [
-    #                 data.first_name,
-    #                 data.last_name,
-    #                 data.email,
-    #                 data.username,
-    #                 data.password,
-    #             ]
-    #             cur.execute(
-    #                 """
-    #                 INSERT INTO users (first_name, last_name, email, username, password)
-    #                 VALUES (%s, %s, %s, %s, %s)
-    #                 RETURNING id, first_name, last_name, email, username, password
-    #                 """,
-    #                 params,
-    #             )
-
-    #             record = None
-    #             row = cur.fetchone()
-    #             if row is not None:
-    #                 record = {}
-    #                 for i, column in enumerate(cur.description):
-    #                     record[column.name] = row[i]
-
-    #             return UserOut(**record)
-
-    # changed password to hashed_password to match what is in the router users.py
     def create_user(
         self, user: UserIn, hashed_password: str
     ) -> UserOutWithPassword:

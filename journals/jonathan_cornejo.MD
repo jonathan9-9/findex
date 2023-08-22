@@ -6,11 +6,16 @@ Each team member is required to keep a development journal, which should be a si
 
 Recommended naming convention is `first_last.md`.
 
+## August 22, 2023
+I helped teammates with getting the endpoints protected and fixing an issue with the get specific user endpoint.
+
+## August 21, 2023
+Today, I completed the back-end authentication and finalized the login, logout and token endpoints. I debugged an issue I had with the user form and changed users to users_out since this is a slightly different output from the second call to my create_users method of the queries. This second call outputs the hashed password and is used to ultimately log a user in and create a token.
+
 ## August 17, 2023
 I created the income migration table in PGAdmin and everything seems to be working and I made migrations. Then assisted teammates to create expense and category table and testing it out on PGAdmin.
 
 ## August 16, 2023
-
 I created a second issue because I updated the users table to include the password property. We also re-tested all of the CRUD endpoints to ensure that we can create a user, get a list of users, get a specific user, and delete a user. Then I created foreign key relationships between the users table and the expenses/incomes table.
 
 ## August 15, 2023

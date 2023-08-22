@@ -51,17 +51,36 @@ async def get_token(
 
 
 # 1. get a user with a specific id
-@router.get("/api/users/{user_id}", response_model=UserOut)
+# @router.get("/api/users/{user_id}", response_model=UserOut)
+# def get_user(
+#     user_id: int,
+#     # response: Response,
+#     queries: UserQueries = Depends(),
+# ):
+#     record = queries.get_user(user_id)
+#     if record is None:
+#         raise HTTPException(
+#             status_code=404,
+#             detail="Could not get a specific user with id {}".format(user_id),
+#         )
+#     else:
+#         return record
+
+
+# get a user by username
+@router.get("/api/users/{username}", response_model=UserOut)
 def get_user(
-    user_id: int,
+    username: str,
     # response: Response,
     queries: UserQueries = Depends(),
 ):
-    record = queries.get_user(user_id)
+    record = queries.get_user(username)
     if record is None:
         raise HTTPException(
             status_code=404,
-            detail="Could not get a specific user with id {}".format(user_id),
+            detail="Could not get a specific user with username {}".format(
+                username
+            ),
         )
     else:
         return record
