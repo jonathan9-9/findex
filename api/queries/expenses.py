@@ -1,22 +1,17 @@
-import os
 from queries.pool import pool
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import date
-
-
-class CategoryOut(BaseModel):
-    expense_category_id: int
-    name: str
+from pydantic import condecimal
 
 
 class ExpenseOut(BaseModel):
     id: int
-    expense_amount: float
+    expense_amount: condecimal(max_digits=10, decimal_places=2)
     date: date
-    category: CategoryOut
-    username: str
-    description: Optional[str]
+    category_name: str
+    description: Optional[str] = None
+    user_id: int
 
 
 class ExpenseListOut(BaseModel):
@@ -24,37 +19,41 @@ class ExpenseListOut(BaseModel):
 
 
 class ExpenseIn(BaseModel):
-    expense_amount: float
+    expense_amount: condecimal(max_digits=10, decimal_places=2)
     date: date
-    category: CategoryOut
-    username: str
+    category: int
+    user_id: int
     description: Optional[str]
 
 
 class ExpenseQueries:
-    def get_all_expenses(self) -> ExpenseListOut:
+    def create_expense(self, data: ExpenseIn):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                SELECT
-                    e.id, e.amount, e.date, e.description,
-                    c.id as expense_category_id,
-                FROM expenses e
-                JOIN categories c ON e.expense_category_id = c.id
-                ORDER BY date DESC
-            """
+                INSERT INTO expenses (expense_amount, date, description, user_id, expense_category_id)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id
+                """,
+                    [
+                        data.expense_amount,
+                        data.date,
+                        data.description,
+                        data.user_id,
+                        data.category,
+                    ],
+                )
+                new_id = cur.fetchone()[0]
+
+                expense = ExpenseOut(
+                    id=new_id,
+                    expense_amount=data.expense_amount,
+                    date=data.date,
+                    category=data.category,
+                    category_name="",
+                    description=data.description,
+                    user_id=data.user_id,
                 )
 
-                results = []
-                for row in cur.fetchall():
-                    record = {}
-                    for i, column in enumerate(cur.description):
-                        record[column.name] = row[i]
-                    results.append(ExpenseListOut(**record))
-
-                return ExpenseListOut(**record)
-
-    # def create_expense(self, data: ExpenseIn):
-
-    # def delete_expense(self, expense_id):
+                return expense
