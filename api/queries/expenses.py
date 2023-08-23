@@ -34,8 +34,8 @@ class ExpenseIn(BaseModel):
 class ExpenseUpdate(BaseModel):
     expense_amount: condecimal(max_digits=10, decimal_places=2)
     date: Optional[date]
+    expense_category_id: Optional[int]
     description: Optional[str]
-    category: Optional[str]
 
 
 class ExpenseQueries:
@@ -68,26 +68,37 @@ class ExpenseQueries:
                     user_id=data.user_id,
                 )
 
-                return expense          
+                return expense        
 
-    def update_expense(self, expense_id: int, expense_update: ExpenseUpdate):
+    def update_expense(
+        self,
+        expense_id,
+        expense_update
+    ):
+
+        set_parts = []
+        update_data = expense_update.dict(exclude_unset=True)
+        for field in update_data:
+            set_parts.append(f"{field} = %s")
+
+        set_clause = ", ".join(set_parts)
+
+        query = f"""
+            UPDATE expenses 
+            SET {set_clause}
+            WHERE id = %s
+            RETURNING id
+        """
+
+        values = list(update_data.values())
+        values.append(expense_id)
+
         with pool.connection() as conn:
             with conn.cursor() as cur:
-                set_clause = ",".join([
-                    f"{field}=@{field}" for field in expense_update.dict(exclude_unset=True)
-                ])
-                
-                query = f"""
-                    UPDATE expenses
-                    SET {set_clause}
-                    WHERE id = {expense_id}
-                    RETURNING id
-                    """
-               
-                cur.execute(query, expense_update.dict(exclude_unset=True))
+                cur.execute(query, values)
                 updated_id = cur.fetchone()[0]
-
-                return {"updated": updated_id}
+    
+        return {"updated": updated_id}
 
     def delete_expense(self, expense_id):
         with pool.connection() as conn:
