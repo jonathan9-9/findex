@@ -48,13 +48,13 @@ class ExpenseQueries:
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
                 """,
-                    (
+                    [
                         data.expense_amount,
                         data.date,
                         data.description,
                         data.user_id,
                         data.category,
-                    ),
+                    ],
                 )
                 new_id = cur.fetchone()[0]
 

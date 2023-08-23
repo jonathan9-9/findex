@@ -7,9 +7,14 @@ volumes:
 
 services:
   fastapi:
+    env_file:
+      - .env
     environment:
       WAIT_HOSTS: postgres:5432
       CORS_HOST: http://localhost:3000
+      SIGNING_KEY: ${SIGNING_KEY}
+      WAIT_BEFORE: 5
+      WAIT_TIMEOUT: 60
       DATABASE_URL: postgresql://user:secret@postgres/example
 
     build:
@@ -44,7 +49,7 @@ services:
       NODE_ENV: development
       HOST: "0.0.0.0"
       PUBLIC_URL: http://localhost:3000
-      REACT_APP_API_HOST: ${REACT_APP_API_HOST}
+      REACT_APP_API_HOST: http://localhost:8000
 
   pg-admin:
     image: dpage/pgadmin4
