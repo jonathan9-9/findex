@@ -1,12 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-<<<<<<< HEAD
-from routers import users, expenses, category
-=======
 from authenticator import authenticator
-from routers import users, expenses
->>>>>>> main
-from routers import users, income, expenses
+from routers import users, income, expenses, category
 import os
 
 app = FastAPI()
