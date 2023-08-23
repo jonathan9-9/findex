@@ -18,7 +18,7 @@ router = APIRouter()
 
 
 @router.post("/api/expenses/{user_id}", response_model=ExpenseOut)
-def create_expense(expense: ExpenseIn, queries: ExpenseQueries = Depends()):
+def create_expense(expense: ExpenseIn, queries: ExpenseQueries = Depends(), ):
     return queries.create_expense(expense)
 
 
