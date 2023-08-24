@@ -26,18 +26,59 @@ def create_expense(
     return queries.create_expense(expense)
 
 
-@router.get("/expenses/{user_id}", response_model=ExpenseListOut)
-def get_expenses(user_id: int, queries: ExpenseQueries = Depends()):
-    try:
-        expenses = queries.get_all_expenses(user_id)
+# @router.get("/expenses/{user_id}", response_model=ExpenseListOut)
+# def get_expenses(user_id: int, queries: ExpenseQueries = Depends()):
+#     try:
+#         expenses = queries.get_all_expenses(user_id)
 
-    except Exception:
-        raise HTTPException(500, "Database error")
+#     except Exception:
+#         raise HTTPException(500, "Database error")
 
-    if not expenses:
-        raise HTTPException(404, f"No expenses found for user {user_id}")
+#     if not expenses:
+#         raise HTTPException(404, f"No expenses found for user {user_id}")
+
+#     return ExpenseListOut(expenses=expenses)
+
+# @router.get("/api/expenses", response_model=ExpenseListOut)
+# def get_all_expenses(queries: ExpenseQueries = Depends()):
+
+#     expenses = queries.get_all_expenses()
+
+#     if not expenses:
+#         raise HTTPException(404, "No expenses found")
+#     return ExpenseListOut(expenses=expenses)
+
+# @router.get("/api/expenses/{user_id}", response_model=ExpenseListOut)
+# def get_all_expenses(user_id: int, queries: ExpenseQueries = Depends()):
+
+#     expenses = queries.get_all_expenses_for_user(user_id)
+
+#     if not expenses:
+#         raise HTTPException(404, "No expenses found for user")
+  
+#     return ExpenseListOut(expenses=expenses)
+
+# @router.get("/api/expenses/{user_id}", response_model=ExpenseListOut)
+# def get_all_expenses(user_id: int, queries: ExpenseQueries = Depends()):
+
+#     expenses = queries.get_all_expenses_for_user(user_id)
+
+#     if not expenses:
+#         raise HTTPException(404, "No expenses found for user")
+
+#     return expenses
+
+@router.get("/api/expenses/{user_id}")
+def get_all_expenses(user_id: int, queries: ExpenseQueries = Depends()):
+
+    expenses = queries.get_all_expenses_for_user(user_id)
+    
+    print()
+    print("EXPENSES:") 
+    print(expenses)
 
     return ExpenseListOut(expenses=expenses)
+
 
 
 @router.put("/expenses/{expense_id}", response_model=dict)
