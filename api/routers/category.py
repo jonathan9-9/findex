@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel
+from authenticator import authenticator
 from queries.pool import pool
 from queries.category import Error, CategoryIn, CategoryOut, CategoryQueries
 from typing import List, Union, Literal
@@ -14,6 +15,7 @@ router = APIRouter()
 def create_category(
     category: CategoryIn,
     repo: CategoryQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ):
     return repo.create(category)
 
@@ -23,6 +25,7 @@ def create_category(
 )
 def get_all_categories(
     repo: CategoryQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ):
     return repo.get_all()
 
@@ -31,5 +34,6 @@ def get_all_categories(
 def delete_category(
     category_id: int,
     repo: CategoryQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ) -> bool:
     return repo.delete(category_id)

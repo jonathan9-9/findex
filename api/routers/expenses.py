@@ -36,7 +36,11 @@ def create_expense(
 
 
 @router.get("/expenses/{user_id}", response_model=ExpenseListOut)
-def get_expenses(user_id: int, queries: ExpenseQueries = Depends()):
+def get_expenses(
+    user_id: int,
+    queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
+):
     try:
         expenses = queries.get_all_expenses(user_id)
 
@@ -54,10 +58,15 @@ def update_expense(
     expense_id: int,
     expense: ExpenseUpdate,
     queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ):
     return queries.update_expense(expense_id, expense)
 
 
 @router.delete("/expenses/{expense_id}", response_model=dict)
-def delete_expense(expense_id: int, queries: ExpenseQueries = Depends()):
+def delete_expense(
+    expense_id: int,
+    queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
+):
     return queries.delete_expense(expense_id)

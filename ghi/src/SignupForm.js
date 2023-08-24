@@ -6,6 +6,8 @@ const SignupForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const { register } = useToken();
   const navigate = useNavigate();
 
@@ -15,6 +17,8 @@ const SignupForm = () => {
       username: username,
       password: password,
       email: email,
+      first_name: firstName,
+      last_name: lastName,
     };
     register(accountData,`${process.env.REACT_APP_API_HOST}/api/users`);
     e.target.reset();
@@ -26,6 +30,28 @@ const SignupForm = () => {
         {/* <h5 className="card-header">Signup</h5> */}
         <div className="card-body">
             <form onSubmit={(e) => handleRegistration(e)}>
+                <div className="mb-3">
+                    <label className="form-label">first name</label>
+                        <input
+                            name="firstName"
+                            type="text"
+                            className="form-control"
+                            onChange={(e) => {
+                            setFirstName(e.target.value);
+                            }}
+                        />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">last name</label>
+                        <input
+                            name="lastName"
+                            type="text"
+                            className="form-control"
+                            onChange={(e) => {
+                            setLastName(e.target.value);
+                            }}
+                        />
+                </div>
                 <div className="mb-3">
                     <label className="form-label">username</label>
                         <input

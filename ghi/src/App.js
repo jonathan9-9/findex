@@ -6,6 +6,7 @@ import ErrorNotification from "./ErrorNotification";
 import "./App.css";
 import SignupForm from "./SignupForm.js";
 import TitleBar from "./TitleBar.js";
+import MainPage from "./MainPage.js";
 
 function App() {
 
@@ -14,7 +15,7 @@ function App() {
       <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
         <TitleBar/>
         <Routes>
-          {/* <Route exact path="/" element={<MainPage />} ></Route> */}
+          <Route exact path="/" element={<MainPage />} ></Route>
           <Route exact path="/signup" element={<SignupForm/>}></Route>
         </Routes>
       </AuthProvider>
