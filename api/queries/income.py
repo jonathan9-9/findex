@@ -131,7 +131,7 @@ class IncomeQueries(BaseModel):
             print(e)
             return {"message": "could not update that income"}
 
-    def delete(self, income_id: int) -> bool:
+    def delete(self, income_id: int) -> Union[bool, Error]:
         try:
             with pool.connection() as conn:
                 with conn.cursor() as cur:
@@ -142,6 +142,7 @@ class IncomeQueries(BaseModel):
                         """,
                         [income_id],
                     )
+            return True
         except Exception as e:
             print(e)
             return {"message": "could not delete income"}

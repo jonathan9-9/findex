@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, Response
-from pydantic import ValidationError
 from typing import Union, List
 from queries.income import IncomeIn, IncomeOut, IncomeQueries, Error
 
@@ -46,5 +45,5 @@ def update_income(
 def delete_income(
     income_id: int,
     repo: IncomeQueries = Depends(),
-) -> bool:
+) -> Union[Error, bool]:
     return repo.delete(income_id)
