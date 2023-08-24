@@ -50,23 +50,6 @@ async def get_token(
         }
 
 
-# 1. get a user with a specific id
-# @router.get("/api/users/{user_id}", response_model=UserOut)
-# def get_user(
-#     user_id: int,
-#     # response: Response,
-#     queries: UserQueries = Depends(),
-# ):
-#     record = queries.get_user(user_id)
-#     if record is None:
-#         raise HTTPException(
-#             status_code=404,
-#             detail="Could not get a specific user with id {}".format(user_id),
-#         )
-#     else:
-#         return record
-
-
 # get a user by username
 @router.get("/api/users/{username}", response_model=UserOut)
 def get_user(
@@ -105,7 +88,6 @@ async def create_user(
     queries: UserQueries = Depends(),
 ):
     hashed_password = authenticator.hash_password(user.password)
-    print("HASHED PASSWORD:", hashed_password)
     try:
         # check that create_user method is correct
         user_out = queries.create_user(user, hashed_password)
