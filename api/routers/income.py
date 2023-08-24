@@ -1,3 +1,4 @@
+from authenticator import authenticator
 from fastapi import APIRouter, Depends, Response
 from authenticator import authenticator
 from typing import Union, List
@@ -24,7 +25,7 @@ def create_income(
 @router.get(
     "/api/incomes/{user_id}", response_model=Union[List[IncomeOut], Error]
 )
-def get_all(
+def get_all_incomes(
     repo: IncomeQueries = Depends(),
     user_id=int,
     user_data: dict = Depends(authenticator.get_current_account_data),
