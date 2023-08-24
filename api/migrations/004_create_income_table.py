@@ -4,15 +4,16 @@ steps = [
         """
         CREATE TABLE income (
             id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-            income_amount FLOAT NOT NULL,
-            date DATE NOT NULL,
             income_title VARCHAR(100),
-            user_id INTEGER NOT NULL REFERENCES users(id)
+            income_amount NUMERIC(10,2) NOT NULL,
+            date DATE NOT NULL,
+            description TEXT,
+            user_id INTEGER REFERENCES users(id)
     );
         """,
         # "Down" SQL statement
         """
-        DROP TABLE income;
+        DROP TABLE IF EXISTS income;
         """,
     ],
 ]
