@@ -15,9 +15,10 @@ app.add_middleware(
 )
 
 
-app.include_router(users.router)
 app.include_router(authenticator.router)
 
+app.include_router(users.router)
+app.include_router(income.router)
 app.include_router(expenses.router)
 
 app.include_router(category.router)
