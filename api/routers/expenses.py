@@ -68,17 +68,35 @@ def create_expense(
 
 #     return expenses
 
-@router.get("/api/expenses/{user_id}")
-def get_all_expenses(user_id: int, queries: ExpenseQueries = Depends()):
+# @router.get("/expenses/{user_id}", response_model=ExpenseListOut)
+# def get_expenses(user_id: int, queries: ExpenseQueries = Depends()):
+#     user_data: dict = Depends(authenticator.get_current_account_data),
+#     try:
+#         expenses = queries.get_all_expenses(user_id)
 
-    expenses = queries.get_all_expenses_for_user(user_id)
-    
-    print()
-    print("EXPENSES:") 
-    print(expenses)
+#     except Exception:
+#         raise HTTPException(500, "Database error")
 
-    return ExpenseListOut(expenses=expenses)
+#     if not expenses:
+#         raise HTTPException(404, f"No expenses found for user {user_id}")
 
+#     return ExpenseListOut(expenses=expenses)
+
+@router.get("/expenses/{user_id}", response_model=ExpenseListOut)
+def get_expenses(
+    user_id: int,  
+    queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data)  
+):
+
+    if user_id != user_data["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized to access this resource")
+
+    try:
+        expenses = queries.get_all_expenses(user_id)
+
+    except Exception:
+        raise HTTPException(500, "Database error")
 
 
 @router.put("/expenses/{expense_id}", response_model=dict)
@@ -86,10 +104,23 @@ def update_expense(
     expense_id: int,
     expense: ExpenseUpdate,
     queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ):
     return queries.update_expense(expense_id, expense)
 
 
-@router.delete("/expenses/{expense_id}", response_model=dict)
-def delete_expense(expense_id: int, queries: ExpenseQueries = Depends()):
-    return queries.delete_expense(expense_id)
+@router.delete("/expenses/{expense_id}", response_model=dict) 
+def delete_expense(
+    expense_id: int, 
+    queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data)
+):
+
+    expense = queries.get_expense(expense_id)
+
+    if expense.user_id != user_data["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this expense") 
+
+    queries.delete_expense(expense_id)
+
+    return {"deleted": expense_id}
