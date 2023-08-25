@@ -4,7 +4,7 @@ function MainPage() {
       <h1 className="display-5 fw-bold">Findex</h1>
       <div className="col-lg-6 mx-auto">
         <p className="lead mb-4">
-          The best financial application!
+          The best financial application you will ever freaking see!
         </p>
       </div>
     </div>
