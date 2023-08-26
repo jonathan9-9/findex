@@ -9,18 +9,18 @@ import Nav from "./Nav";
 import './index.css';
 
 function App() {
-
   return (
-    <BrowserRouter>
-      <Nav />
-      <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
-        <TitleBar/>
-        <Routes>
-          <Route exact path="signup" element={<SignupForm/>}></Route>
-          <Route exact path="/" element={<MainPage />} ></Route>
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+  <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
+    <div className="bg-gradient-to-r from-customBlue to-customGreen h-screen">
+      <BrowserRouter>
+          <Nav />
+          <Routes>
+            <Route path="signup" element={<SignupForm/>}/>
+            <Route index element={<MainPage />}/>
+          </Routes>
+      </BrowserRouter>
+    </div>
+  </AuthProvider>
   );
 }
 
