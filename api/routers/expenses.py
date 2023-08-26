@@ -26,17 +26,18 @@ def create_expense(
     return queries.create_expense(expense)
 
 
-@router.get("/expenses/{user_id}", response_model=ExpenseListOut)
-def get_expenses(user_id: int, queries: ExpenseQueries = Depends()):
-    try:
-        expenses = queries.get_all_expenses(user_id)
+@router.get("/api/expenses/{user_id}", response_model=ExpenseListOut)
+def get_all_expenses(
+    user_id: int,
+    queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data)
+):
 
-    except Exception:
-        raise HTTPException(500, "Database error")
+    expenses = queries.get_all_expenses_for_user(user_id)
 
     if not expenses:
-        raise HTTPException(404, f"No expenses found for user {user_id}")
-
+        raise HTTPException(404, "No expenses found for user")
+  
     return ExpenseListOut(expenses=expenses)
 
 
@@ -45,10 +46,25 @@ def update_expense(
     expense_id: int,
     expense: ExpenseUpdate,
     queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    return queries.update_expense(expense_id, expense)
+    user_id = user_data["id"]
+    update_data = expense.dict() 
+    return queries.update_expense(expense_id, user_id, update_data, expense)
 
 
-@router.delete("/expenses/{expense_id}", response_model=dict)
-def delete_expense(expense_id: int, queries: ExpenseQueries = Depends()):
-    return queries.delete_expense(expense_id)
+@router.delete("/api/expenses/{user_id}/{expense_id}")
+def delete_expense(
+    expense_id: int,
+    queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data)  
+):
+
+    expense = queries.get_all_expenses_for_user(expense_id)
+
+    try:
+        deleted = queries.delete_expense(user_data["id"], expense_id)
+        return {"deleted": deleted}
+    except Exception as e:
+        print(e)
+        return ("could not delete expense")
