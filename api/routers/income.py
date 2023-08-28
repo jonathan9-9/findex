@@ -1,6 +1,5 @@
 from authenticator import authenticator
 from fastapi import APIRouter, Depends, Response
-from authenticator import authenticator
 from typing import Union, List
 from queries.income import (
     IncomeIn,
