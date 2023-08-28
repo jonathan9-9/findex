@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import users, expenses, category
+from routers import users, expenses, category, income
 from authenticator import authenticator
 import os
 
