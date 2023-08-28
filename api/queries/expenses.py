@@ -1,13 +1,9 @@
 from queries.pool import pool
+from queries.category import CategoryOut
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import date
 from pydantic import condecimal
-
-
-class CategoryOut(BaseModel):
-    expense_category_id: int
-    name: str
 
 
 class ExpenseOut(BaseModel):
@@ -39,115 +35,173 @@ class ExpenseUpdate(BaseModel):
 
 
 class ExpenseQueries:
-    def create_expense(self, data: ExpenseIn):
+    def create_expense(self, expense: ExpenseIn):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                INSERT INTO expenses (expense_amount, date, description, user_id, expense_category_id)
+                INSERT INTO expenses (expense_amount, date, expense_category_id, description, user_id)
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
                 """,
-                    [
-                        data.expense_amount,
-                        data.date,
-                        data.description,
-                        data.user_id,
-                        data.category,
-                    ],
-                )
-                new_id = cur.fetchone()[0]
-
-                expense = ExpenseOut(
-                    id=new_id,
-                    expense_amount=data.expense_amount,
-                    date=data.date,
-                    category=data.category,
-                    category_name="",
-                    description=data.description,
-                    user_id=data.user_id,
+                    (
+                        expense.expense_amount,
+                        expense.date,
+                        expense.category,
+                        expense.description,
+                        expense.user_id,
+                    ),
                 )
 
-                return expense   
-            
-    def get_all_expenses_for_user(self, user_id):
-        with pool.connection() as conn:  
+                expense_id = cur.fetchone()[0]
+
+                cur.execute(
+                    """
+                SELECT id, expense_category_name
+                FROM category
+                WHERE id = %s
+                """,
+                    (expense.category,),
+                )
+
+                category_tuple = cur.fetchone()
+
+                category_dict = {
+                    "id": category_tuple[0],
+                    "expense_category_name": category_tuple[1],
+                }
+
+                category = CategoryOut(**category_dict)
+
+                return ExpenseOut(
+                    id=expense_id,
+                    expense_amount=expense.expense_amount,
+                    category=category,
+                    category_name=category.expense_category_name,
+                    date=expense.date,
+                    user_id=expense.user_id,
+                    description=expense.description,
+                )
+
+    def update_expense(
+        self, expense_id: int, user_id: int, expense_update: ExpenseUpdate
+    ):
+        with pool.connection() as conn:
             with conn.cursor() as cur:
+                category_id = expense_update.expense_category_id
+                del expense_update.expense_category_id
 
+                set_clause = ",".join(
+                    f"{field}=%s"
+                    for field in expense_update.dict(exclude_unset=True)
+                )
+
+                values = [
+                    expense_update.dict(exclude_unset=True)[f]
+                    for f in expense_update.dict(exclude_unset=True)
+                ]
+                values.append(expense_id)
+
+                query = f"""
+                    UPDATE expenses
+                    SET {set_clause}
+                    WHERE id = %s
+                    RETURNING id
+                    """
+                cur.execute(query, values)
+                updated_id = cur.fetchone()[0]
+
+                if category_id:
+                    cur.execute(
+                        """
+                            UPDATE expenses
+                            SET expense_category_id = %s
+                            WHERE id = %s
+                        """,
+                        (category_id, expense_id),
+                    )
+
+                cur.execute(
+                    """
+                    SELECT
+                        e.id,
+                        e.expense_amount,
+                        e.date,
+                        c.expense_category_name,
+                        e.description,
+                        e.user_id
+                    FROM expenses e
+                    LEFT JOIN category c ON e.expense_category_id = c.id
+                    WHERE e.id = %s
+                    """,
+                    (expense_id,),
+                )
+
+                row = cur.fetchone()
+
+                updated_expense = ExpenseOut(
+                    id=row[0],
+                    expense_amount=row[1],
+                    date=row[2],
+                    category_name=row[3],
+                    description=row[4],
+                    user_id=row[5],
+                )
+
+                return updated_expense
+
+    def get_all_expenses_for_user(self, user_id):
+        with pool.connection() as conn:
+            with conn.cursor() as cur:
                 query = """
-                    SELECT 
-                        id,
-                        expense_amount,
-                        date,
-                        description,
-                        user_id
-                    FROM expenses  
-                    WHERE user_id = %s
+                    SELECT
+                        e.id,
+                        e.expense_amount,
+                        e.date,
+                        e.description,
+                        e.user_id,
+                        c.expense_category_name
+                    FROM expenses e
+                    LEFT JOIN category c ON e.expense_category_id = c.id
+                    WHERE e.user_id = %s
                 """
 
                 cur.execute(query, (user_id,))
-                
+
                 results = []
 
                 for row in cur.fetchall():
-                    
                     expense = ExpenseOut(
                         id=row[0],
-                        expense_amount=row[1], 
+                        expense_amount=row[1],
                         date=row[2],
                         description=row[3],
-                        category_name="category name",
-                        user_id=row[4] 
+                        user_id=row[4],
+                        category_name=row[5],
                     )
 
                     results.append(expense)
 
                 return results
 
-    def update_expense(
-        self,
-        expense_id,
-        user_id,
-        update_data,
-        expense_update
-    ):
-
-        set_parts = []
-        update_data = expense_update.dict(exclude_unset=True)
-        for field in update_data:
-            set_parts.append(f"{field} = %s")
-
-        set_clause = ", ".join(set_parts)
-
-        query = f"""
-            UPDATE expenses 
-            SET {set_clause}
-            WHERE id = %s AND user_id = %s
-            RETURNING id
-        """
-        values = list(update_data.values()) + [expense_id, user_id]
-        updated_id = self.execute_query(query, values)
-        return {"updated": updated_id}
-        
     def execute_query(self, query, values):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 cur.execute(query, values)
                 updated_id = cur.fetchone()[0]
-    
+
         return {"updated": updated_id}
 
     def delete_expense(self, user_id, expense_id):
-
         query = """
             DELETE FROM expenses
             WHERE id = %s AND user_id = %s
             RETURNING id
         """
-    
+
         with pool.connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(query, (expense_id, user_id))  
+                cur.execute(query, (expense_id, user_id))
                 deleted_id = cur.fetchone()
 
                 if deleted_id is None:
