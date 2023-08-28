@@ -15,7 +15,7 @@ function Nav() {
         <ul className="flex justify-end items-center space-y-6 space-x-6 h-full">
           <div className="w-[71px] h-[71px] left-2 top-0 absolute bg-customGreen rounded-[44.50px]"></div>
           <div className="left-[102px] top-[-30px] absolute">
-            <span className="text-neutral-500 text-[39px] font-semibold">
+            <span className="text-slate-50 text-[39px] font-semibold">
               Fin
             </span>
             <span className="text-emerald-300 text-[39px] font-semibold">
@@ -23,7 +23,7 @@ function Nav() {
             </span>
           </div>
 
-          <div className="left-[155px] top-[10px] absolute text-neutral-500 text-[25px] font-weather">
+          <div className="left-[155px] top-[10px] absolute text-slate-50 text-[25px] font-serif">
             financial index generator
           </div>
 
@@ -31,7 +31,7 @@ function Nav() {
             <>
               <li>
                 <NavLink
-                  className="text-neutral-500 text-[22px] font-weather"
+                  className="text-[22px] text-slate-50 font-weather"
                   to="/login"
                 >
                   Login
@@ -39,7 +39,7 @@ function Nav() {
               </li>
               <li>
                 <NavLink
-                  className="text-neutral-500 text-[22px] font-weather"
+                  className="text-slate-50 text-[22px] font-weather"
                   to="/signup"
                 >
                   Sign Up
@@ -49,7 +49,7 @@ function Nav() {
           ) : (
             <li>
               <button
-                className="text-neutral-500 text-[22px] font-weather"
+                className="text-slate-50 text-[22px] font-weather"
                 onClick={handleLogout}
               >
                 Logout
@@ -59,7 +59,7 @@ function Nav() {
 
           <li>
             <NavLink
-              className="text-neutral-500 text-[22px] font-weather"
+              className="text-slate-50 text-[22px] font-weather"
               to="/"
             >
               Home
@@ -67,7 +67,7 @@ function Nav() {
           </li>
           <li>
             <NavLink
-              className="text-neutral-500 text-[22px] font-weather"
+              className="text-slate-50 text-[22px] font-weather"
               to="/income"
             >
               Income
@@ -75,7 +75,7 @@ function Nav() {
           </li>
           <li>
             <NavLink
-              className="text-neutral-500 text-[22px] font-weather"
+              className="text-slate-50 text-[22px] font-weather"
               to="/expenses"
             >
               Expenses
@@ -83,7 +83,7 @@ function Nav() {
           </li>
           <li>
             <NavLink
-              className="text-neutral-500 text-[22px] font-weather"
+              className="text-slate-50 text-[22px] font-weather"
               to="/analyzer"
             >
               Analyzer

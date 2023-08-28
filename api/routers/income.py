@@ -2,7 +2,13 @@ from authenticator import authenticator
 from fastapi import APIRouter, Depends, Response
 from authenticator import authenticator
 from typing import Union, List
-from queries.income import IncomeIn, IncomeOut, IncomeQueries, Error
+from queries.income import (
+    IncomeIn,
+    IncomeOut,
+    IncomeQueries,
+    Error,
+    IncomeListOut,
+)
 
 router = APIRouter()
 
@@ -23,14 +29,15 @@ def create_income(
 
 
 @router.get(
-    "/api/incomes/{user_id}", response_model=Union[List[IncomeOut], Error]
+    "/api/incomes/{user_id}", response_model=Union[IncomeListOut, Error]
 )
 def get_all_incomes(
     repo: IncomeQueries = Depends(),
     user_id=int,
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    return repo.get_all(user_id=user_id)
+    # return repo.get_all(user_id=user_id)
+    return {"incomes": repo.get_all(user_id=user_id)}
 
 
 @router.put(
