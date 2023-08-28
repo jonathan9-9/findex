@@ -1,3 +1,4 @@
+from authenticator import authenticator
 from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel
 from authenticator import authenticator
@@ -14,6 +15,7 @@ router = APIRouter()
 )
 def create_category(
     category: CategoryIn,
+    user_id: int,
     repo: CategoryQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
@@ -24,15 +26,17 @@ def create_category(
     "/api/category/{user_id}", response_model=Union[List[CategoryOut], Error]
 )
 def get_all_categories(
+    user_id: int,
     repo: CategoryQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
     return repo.get_all()
 
 
-@router.delete("/category/{user_id}", response_model=Literal[True, False])
+@router.delete("/api/category/{user_id}", response_model=Literal[True, False])
 def delete_category(
     category_id: int,
+    user_id: int,
     repo: CategoryQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ) -> bool:

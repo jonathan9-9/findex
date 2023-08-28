@@ -11,7 +11,6 @@ from queries.expenses import (
     ExpenseListOut,
     ExpenseQueries,
     ExpenseUpdate,
-    CategoryOut,
 )
 
 router = APIRouter()
@@ -20,6 +19,7 @@ router = APIRouter()
 @router.post("/api/expenses/{user_id}", response_model=ExpenseOut)
 def create_expense(
     expense: ExpenseIn,
+    user_id: int,
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
@@ -49,21 +49,25 @@ def get_all_expenses(
     return ExpenseListOut(expenses=expenses)
 
 
-@router.put("/expenses/{expense_id}", response_model=dict)
+@router.put("/api/expenses/{user_id}/{expense_id}", response_model=ExpenseOut)
 def update_expense(
     expense_id: int,
-    expense: ExpenseUpdate,
+    user_id: int,
+    expense_update: ExpenseUpdate,
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    user_id = user_data["id"]
-    update_data = expense.dict()
-    return queries.update_expense(expense_id, user_id, update_data, expense)
+    # user_id = user_data["id"]
+    updated_expense = queries.update_expense(
+        expense_id, user_id, expense_update
+    )
+    return updated_expense
 
 
 @router.delete("/api/expenses/{user_id}/{expense_id}")
 def delete_expense(
     expense_id: int,
+    user_id: int,
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
