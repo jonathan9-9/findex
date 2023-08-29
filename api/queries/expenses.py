@@ -109,7 +109,6 @@ class ExpenseQueries:
                     RETURNING id
                     """
                 cur.execute(query, values)
-                updated_id = cur.fetchone()[0]
 
                 if category_id:
                     cur.execute(
