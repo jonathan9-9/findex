@@ -6,6 +6,10 @@ Each team member is required to keep a development journal, which should be a si
 
 Recommended naming convention is `first_last.md`.
 
+## August 23, 2023
+
+I tested all the endpoints for a couple of teammates. I reviewed a teammates merge request and approved of it after checking that everything works on my end. Then I pulled from main branch and resolved all possible merge conflicts. I worked on front-end auth and set up the sign up form.
+
 ## August 22, 2023
 I helped teammates with getting the endpoints protected and fixing an issue with the get specific user endpoint.
 

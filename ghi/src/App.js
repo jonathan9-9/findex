@@ -1,39 +1,29 @@
-import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
+import { AuthProvider } from "@galvanize-inc/jwtdown-for-react"
 import { useEffect, useState } from "react";
-import Construct from "./Construct.js";
-import ErrorNotification from "./ErrorNotification";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import "./App.css";
+import SignupForm from "./SignupForm.js";
+import TitleBar from "./TitleBar.js";
+import MainPage from "./MainPage.js";
+import LoginForm from "./LoginForm";
+import './index.css';
 
 function App() {
-  const [launchInfo, setLaunchInfo] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function getData() {
-      let url = `${process.env.REACT_APP_API_HOST}/api/launch-details`;
-      console.log("fastapi url: ", url);
-      let response = await fetch(url);
-      console.log("------- hello? -------");
-      let data = await response.json();
-
-      if (response.ok) {
-        console.log("got launch data!");
-        setLaunchInfo(data.launch_details);
-      } else {
-        console.log("drat! something happened");
-        setError(data.message);
-      }
-    }
-    getData();
-  }, []);
 
   return (
-    <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
-      <div>
-        <ErrorNotification error={error} />
-        <Construct info={launchInfo} />
-      </div>
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
+          <h1 className="text-red-700 font-bold underline">
+            Hello world!
+          </h1>
+        <TitleBar/>
+        <Routes>
+          <Route exact path="/" element={<MainPage />} ></Route>
+          <Route exact path="/signup" element={<SignupForm/>}></Route>
+          <Route path= "/login" element={<LoginForm/>}></Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
