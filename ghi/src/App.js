@@ -12,8 +12,6 @@ import useToken from "@galvanize-inc/jwtdown-for-react";
 function App() {
 
 
-
-
   return (
     <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
       <div className="bg-gradient-to-r from-customGreenOne to-customGreenTwo bg-opacity-10 h-screen">
