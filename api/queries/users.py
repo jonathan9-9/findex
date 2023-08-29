@@ -1,6 +1,6 @@
 import os
+from typing import List
 from psycopg_pool import ConnectionPool
-from typing import List, Literal
 from pydantic import BaseModel
 
 pool = ConnectionPool(conninfo=os.environ["DATABASE_URL"])
@@ -23,7 +23,7 @@ class DuplicateAccountError(ValueError):
 
 
 class UserListOut(BaseModel):
-    users: list[UserOut]
+    users: List[UserOut]
 
 
 class UserIn(BaseModel):
