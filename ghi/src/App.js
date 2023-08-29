@@ -7,6 +7,7 @@ import MainPage from "./MainPage.js";
 import Nav from "./Nav";
 import Income from "./Income";
 import './index.css';
+import LoginForm from "./LoginForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="signup" element={<SignupForm />} />
             <Route index element={<MainPage />} />
             {/* <Route path="income" element={<Income />} /> */}
+            <Route path="login" element={<LoginForm />} />
           </Routes>
         </BrowserRouter>
       </div>

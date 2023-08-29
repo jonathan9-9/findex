@@ -37,7 +37,12 @@ const LoginForm = () => {
             />
           </div>
           <div>
-            <input className="btn btn-primary" type="submit" value="Login" />
+            <button
+              className="bg-black hover:bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+              type="submit"
+            >
+              Login
+            </button>
           </div>
         </form>
       </div>
