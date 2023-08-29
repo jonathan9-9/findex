@@ -51,3 +51,11 @@ Tawain and I solved the user issue. I optimized the SQL on the migration table f
 ## August 22, 2023
 
 Today we are doing merge requests to update our local repos with the backend Auth code Jonathan completed with instructors yesterday. Then we can all protect the endpoints we are working on and send our own merge requests. Tawain and Rafael will also be completing their endpoints today.
+
+## August 23, 2023
+
+More merge requests today, spent most of our time with merge requests and the rest of the team catching up with their endpoints.
+
+# August 24, 2023
+
+More Merge requests today, and protected endpoints with auth, front end auth register / signup complete. Helped out a teammate with some git flow issues.
