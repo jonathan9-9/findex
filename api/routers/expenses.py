@@ -1,10 +1,6 @@
 from authenticator import authenticator
-from fastapi import APIRouter, Depends, Response
-from pydantic import BaseModel
-from queries.pool import pool
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from typing import Optional
 from queries.expenses import (
     ExpenseOut,
     ExpenseIn,
@@ -71,7 +67,7 @@ def delete_expense(
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    expense = queries.get_all_expenses_for_user(expense_id)
+    queries.get_all_expenses_for_user(expense_id)
 
     try:
         deleted = queries.delete_expense(user_data["id"], expense_id)

@@ -1,7 +1,6 @@
 from authenticator import authenticator
 from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel
-from authenticator import authenticator
 from queries.pool import pool
 from queries.category import Error, CategoryIn, CategoryOut, CategoryQueries
 from typing import List, Union, Literal
