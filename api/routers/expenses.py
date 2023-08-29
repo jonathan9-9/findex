@@ -1,17 +1,12 @@
 from authenticator import authenticator
-from fastapi import APIRouter, Depends, Response
-from pydantic import BaseModel
-from queries.pool import pool
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from typing import Optional
 from queries.expenses import (
     ExpenseOut,
     ExpenseIn,
     ExpenseListOut,
     ExpenseQueries,
     ExpenseUpdate,
-    CategoryOut,
 )
 
 router = APIRouter()
@@ -20,6 +15,7 @@ router = APIRouter()
 @router.post("/api/expenses/{user_id}", response_model=ExpenseOut)
 def create_expense(
     expense: ExpenseIn,
+    user_id: int,
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
@@ -30,41 +26,42 @@ def create_expense(
 def get_all_expenses(
     user_id: int,
     queries: ExpenseQueries = Depends(),
-    user_data: dict = Depends(authenticator.get_current_account_data)
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-
     expenses = queries.get_all_expenses_for_user(user_id)
 
     if not expenses:
         raise HTTPException(404, "No expenses found for user")
-  
     return ExpenseListOut(expenses=expenses)
 
 
-@router.put("/expenses/{expense_id}", response_model=dict)
+@router.put("/api/expenses/{user_id}/{expense_id}", response_model=ExpenseOut)
 def update_expense(
     expense_id: int,
-    expense: ExpenseUpdate,
+    user_id: int,
+    expense_update: ExpenseUpdate,
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    user_id = user_data["id"]
-    update_data = expense.dict() 
-    return queries.update_expense(expense_id, user_id, update_data, expense)
+    # user_id = user_data["id"]
+    updated_expense = queries.update_expense(
+        expense_id, user_id, expense_update
+    )
+    return updated_expense
 
 
 @router.delete("/api/expenses/{user_id}/{expense_id}")
 def delete_expense(
     expense_id: int,
+    user_id: int,
     queries: ExpenseQueries = Depends(),
-    user_data: dict = Depends(authenticator.get_current_account_data)  
+    user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-
-    expense = queries.get_all_expenses_for_user(expense_id)
+    queries.get_all_expenses_for_user(expense_id)
 
     try:
         deleted = queries.delete_expense(user_data["id"], expense_id)
         return {"deleted": deleted}
     except Exception as e:
         print(e)
-        return ("could not delete expense")
+        return "could not delete expense"
