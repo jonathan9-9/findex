@@ -19,7 +19,16 @@ def create_expense(
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    return queries.create_expense(expense)
+    result = queries.create_expense(expense)
+    # if result is None:
+    #     raise HTTPException(status_code=404, detail="Could not create expense")
+    # elif result.user_id != user_data["user_id"]:
+    #     raise HTTPException(
+    #         status_code=403,
+    #         detail="Unauthorized - current user id cannot create expense",
+    #     )
+    # else:
+    return result
 
 
 @router.get("/api/expenses/{user_id}", response_model=ExpenseListOut)
