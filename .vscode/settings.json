@@ -12,7 +12,9 @@
     "css": "css"
   },
   "editor.quickSuggestions": {
-      "strings": true
+    "strings": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   }
-
 }

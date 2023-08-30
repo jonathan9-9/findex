@@ -206,4 +206,4 @@ class ExpenseQueries:
                 if deleted_id is None:
                     raise ValueError("Expense not found")
 
-            return {"deleted": deleted_id[0]}
+                return {"deleted": deleted_id[0]}
