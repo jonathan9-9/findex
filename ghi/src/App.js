@@ -13,10 +13,9 @@ import useToken from "@galvanize-inc/jwtdown-for-react";
 
 function App() {
   const [userDetails, setUserDetails] = useState(null);
-  const handleUserDetailsChange = (newUserDetails) => {
+  const handleUserChange = (newUserDetails) => {
     setUserDetails(newUserDetails);
   };
-  //useeffect?
 
   return (
     <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
@@ -35,7 +34,7 @@ function App() {
               element={
                 <LoginForm
                   userDetails={userDetails}
-                  onUserDetailsChange={handleUserDetailsChange}
+                  onUserChange={handleUserChange}
                 />
               }
             />
