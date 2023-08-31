@@ -13,7 +13,13 @@ function Nav() {
     <nav className="pt-2 pb-8">
       <div className="py-2 px-2">
         <ul className="flex justify-end items-center space-y-6 space-x-6 h-full relative">
-          <div className="w-[71px] h-[71px] left-2 top-0 absolute bg-customGreen rounded-[44.50px]"></div>
+          <div className="w-[69px] h-[69px] left-2 top-0 absolute">
+            <img
+              className="w-full h-full object-contain"
+              src="/FinDex Logo.png"
+              alt="FinDex Logo"
+            />
+          </div>
           <div className="left-[58px] absolute">
             <span className="text-slate-50 text-[32px] font-semibold">
               Fin
