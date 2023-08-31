@@ -25,7 +25,7 @@ function ListIncomes({ userDetails }) {
 
     useEffect(() => {
         fetchData();
-    }, [userDetails]); // Add userDetails to the dependency array
+    }, [userDetails]);
 
     return (
         <table className="table table-striped">

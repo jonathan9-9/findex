@@ -59,3 +59,21 @@ More merge requests today, spent most of our time with merge requests and the re
 # August 24, 2023
 
 More Merge requests today, and protected endpoints with auth, front end auth register / signup complete. Helped out a teammate with some git flow issues.
+
+# August 25, 2023
+
+We finished the expense delete endpoint,i approved the merge request from Rafael. We also started working on some front end auth together.
+
+## BREAK
+
+# August 28, 2023
+
+Today we worked on getting merge requests done in the correct order so that everyone has functioning front end auth.
+
+# August 29, 2023
+
+Today we all tried working on our own assigned tasks, it was a slow day and some of use seemed pretty drained. Tomorrow we will reconvene and see where we are at in the project.
+
+# August 30, 2023
+
+Today i was presented with an id issue regarding front end. We were unable to access user id to use at the end of our fetch path in order to gather data. I got myself caught up with the front end and started working on get all incomes to show. It took some time but i was able to use a fetch from username declared in LoginForm, store it into a variable, and push it to App.js through props. From there app passes the variable to the other routes so they can access user information. Will send merge request tonight so tomorrow morning it can be reviewed.
