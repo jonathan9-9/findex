@@ -128,12 +128,15 @@ const useToken = () => {
    * Login to set API token.
    * @param username - Username of existing account
    * @param password - Password of existing account
+   * @param user_id - User id of existing account
    */
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string, user_id: number) => {
     const url = `${baseUrl}/token`;
     const form = new FormData();
     form.append("username", username);
     form.append("password", password);
+    form.append("user_id", user_id.toString());
+
     fetch(url, {
       method: "post",
       credentials: "include",
@@ -169,7 +172,7 @@ const useToken = () => {
         "Content-Type": "application/json",
       },
     })
-      .then(() => login(userData.username, userData.password))
+      .then(() => login(userData.username, userData.password, userData.user_id))
       .catch(console.error);
   };
 
