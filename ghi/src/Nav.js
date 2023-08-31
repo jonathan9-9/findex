@@ -10,7 +10,7 @@ function Nav() {
   };
 
   return (
-    <nav>
+    <nav className="pt-2 pb-8">
       <div className="py-2 px-2">
         <ul className="flex justify-end items-center space-y-6 space-x-6 h-full relative">
           <div className="w-[71px] h-[71px] left-2 top-0 absolute bg-customGreen rounded-[44.50px]"></div>
