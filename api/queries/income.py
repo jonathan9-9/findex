@@ -21,7 +21,6 @@ class IncomeOut(BaseModel):
     income_amount: condecimal(max_digits=10, decimal_places=2)
     date: date
     description: Optional[str]
-    user_id: int
 
 
 class IncomeListOut(BaseModel):
@@ -96,7 +95,6 @@ class IncomeQueries(BaseModel):
                                 3
                             ],  # date=[value[3].month, value[3].year],
                             description=value[4],
-                            user_id=value[5],
                         )
                         for value in cur
                     ]
