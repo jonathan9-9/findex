@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
-function Nav() {
+function Nav({ }) {
   const { token, logout } = useToken();
 
   const handleLogout = () => {
@@ -70,7 +70,7 @@ function Nav() {
               className="text-slate-50 text-[22px] font-weather"
               to="/income"
             >
-              Income
+              My Income
             </NavLink>
           </li>
           <li>

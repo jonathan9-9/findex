@@ -1,6 +1,154 @@
-import React, { useState, Effect } from "react";
+import React, { useState, Effect, useContext } from "react";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { Link, useNavigate, useParams } from "react-router-dom"
+import { UserContext } from "./App";
+
+
+
+function Income({ setIncomes, incomes }) {
+
+    const { user } = useContext(UserContext)
+    // can also do user.username to add into path url if needed in other components
+    //import UserContext, useContext into whichever component vs prop drilling
+    const [incomeAmount, setIncomeAmount] = useState('');
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    const { token, fetchWithToken } = useToken()
+
+    const handleIncomeAmountChange = (e) => {
+        const value = e.target.value;
+        setIncomeAmount(value);
+    };
+
+    const handleDateChange = e => {
+        setSelectedDate(e.target.value)
+
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+
+        const data = {
+            income_amount: incomeAmount,
+            date: selectedDate,
+        };
+
+
+        const incomeUrl = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`;
+        if (token) {
+            const newIncome = await fetchWithToken(incomeUrl, "POST", { 'Content-Type': 'application/json' }, { body: JSON.stringify(data) })
+            console.log(newIncome);
+
+
+            setIncomeAmount('');
+            setSelectedDate(null);
+            setIncomes()
+
+
+        }
+
+
+
+    }
+
+    return (
+        <div className="flex justify-center items-center my-14 space-x-64">
+            <div className="bg-white shadow-md p-6 rounded-md w-96">
+                <form onSubmit={handleSubmit} id="create-income-form">
+                    <h1 className="text-2xl font-semibold mb-4">Add an Income</h1>
+                    <div className="mb-4">
+                        <input
+                            onChange={handleIncomeAmountChange}
+                            value={incomeAmount}
+                            placeholder="Income amount in $"
+                            required
+                            type="number"
+                            step="0.01"
+                            id="income"
+                            name="income"
+                            className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <input
+                            type="date"
+                            value={selectedDate}
+                            onChange={handleDateChange}
+
+                            className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <button
+                            className="bg-black hover:bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit"
+                        >
+                            Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <h2 className="text-xl font-semibold mb-4">Income by Month</h2>
+
+            <div className="bg-white shadow-md rounded my-6">
+                <table className="min-w-full leading-normal">
+                    <thead>
+                        <tr>
+                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Income amount($)
+                            </th>
+                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Description
+                            </th>
+                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Income title
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {incomes.map((income, idx) => {
+                            return (
+                                <tr key={idx}>
+                                    <td>{income.date}</td>
+                                    <td>{income.income_amount}</td>
+                                    <td>{income.description}</td>
+                                    <td>{income.income_title}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    );
+
+}
+export default Income;
+
+    // const [userInfo, setUserInfo] = useState(null);
+
+   // fetch(`${process.env.REACT_APP_API_HOST}/api/users/${user.username}`).then(response => {
+        //     if (response.ok) {
+        //         return response.json();
+        //     } else {
+        //         throw new Error('Failed to fetch users data');
+        //     }
+        // })
+        //     .then(data => {
+        //         console.log("DATA", data);
+        //         setUserInfo(data);
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
+
+
+
 
 // function Income() {
 //     const [incomes, setIncomes] = useState(null);
@@ -70,155 +218,3 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 // }
 
 // export default Income;
-
-function Income({ incomes, setIncomes }) {
-
-    const [incomeAmount, setIncomeAmount] = useState('');
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
-
-
-    const { token, fetchWithToken } = useToken()
-
-    const handleIncomeAmountChange = (e) => {
-        const value = e.target.value;
-        setIncomeAmount(value);
-    };
-
-    const handleDateChange = e => {
-        setSelectedDate(e.target.value)
-
-    }
-
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-
-        const data = {
-            income_amount: incomeAmount,
-            date: selectedDate,
-        };
-
-
-
-        fetch(`${process.env.REACT_APP_API_HOST}/api/users/lock1`).then(response => {
-            console.log("RESPONSE", response)
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Failed to fetch users data');
-            }
-        })
-            .then(data => {
-                console.log("DATA", data);
-                setUserInfo(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-        console.log("user data", userInfo.id)
-
-
-
-
-        const incomeUrl = `${process.env.REACT_APP_API_HOST}/api/incomes/${userInfo.id}`;
-        if (token) {
-            const newIncome = fetchWithToken(incomeUrl, "POST", { 'Content-Type': 'application/json' }, { body: JSON.stringify(data) })
-            console.log(newIncome);
-
-
-            setIncomeAmount('');
-            setSelectedDate(null);
-            setIncomes()
-
-
-        }
-
-
-
-    }
-
-    return (
-        <div className="flex justify-center items-center my-14 space-x-64">
-            <div className="bg-white shadow-md p-6 rounded-md w-96">
-                <form onSubmit={handleSubmit} id="create-income-form">
-                    <h1 className="text-2xl font-semibold mb-4">Add an Income</h1>
-                    <div className="mb-4">
-                        <input
-                            onChange={handleIncomeAmountChange}
-                            value={incomeAmount}
-                            placeholder="Income amount in $"
-                            required
-                            type="number"
-                            step="0.01"
-                            id="income"
-                            name="income"
-                            className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <input
-                            type="date"
-                            value={selectedDate}
-                            onChange={handleDateChange}
-
-                            className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <button
-                            className="bg-black hover:bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                            type="submit"
-                        >
-                            Create
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div>
-                <h2 className="text-xl font-semibold mb-4">Income by Month</h2>
-                <div className="flex flex-col">
-                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                            <div className="overflow-hidden">
-                                <table className="min-w-full text-center text-sm font-light">
-                                    <colgroup>
-                                        <col style={{ width: '20%' }} /> {/* Adjust the width as needed */}
-                                        <col style={{ width: '40%' }} /> {/* Adjust the width as needed */}
-                                        <col style={{ width: '40%' }} /> {/* Adjust the width as needed */}
-                                    </colgroup>
-                                    <thead className="border-b bg-neutral-800 font-medium text-white dark:border-neutral-500 dark:bg-neutral-900">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-4">Month</th>
-                                            <th scope="col" class="px-6 py-4">Income</th>
-                                            <th scope="col" class="px-6 py-4">Total Income</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b dark:border-neutral-500">
-                                            <td className="whitespace-nowrap px-6 py-4 font-medium">December</td>
-                                            <td className="whitespace-nowrap px-6 py-4">$7693.22</td>
-                                            <td className="whitespace-nowrap px-6 py-4"></td>
-                                        </tr>
-                                        <tr class="border-b dark:border-neutral-500">
-                                            <td className="whitespace-nowrap px-6 py-4 font-medium">January</td>
-                                            <td className="whitespace-nowrap px-6 py-4">$97098.45</td>
-                                            <td className="whitespace-nowrap px-6 py-4">$168977.32</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-
-}
-export default Income;

@@ -2,8 +2,8 @@ import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState } from "react";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const { login } = useToken();
 
   const handleSubmit = (e) => {
