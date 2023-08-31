@@ -12,11 +12,12 @@ function ListIncomes({ userDetails }) {
             return;
         }
 
+        const API_HOST = process.env.REACT_APP_API_HOST;
         const headers = {
             Authorization: `Bearer ${token}`
         };
 
-        const response = await fetch(`http://localhost:8000/api/incomes/${userDetails.id}`, { headers });
+        const response = await fetch(`${API_HOST}/api/incomes/${userDetails.id}`, { headers });
         if (response.ok) {
             const data = await response.json();
             setIncomes(data.incomes);

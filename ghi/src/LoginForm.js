@@ -7,12 +7,13 @@ const LoginForm = ({ onUserChange }) => {
   const { login, fetchWithToken } = useToken();
 
   const [userId, setUserId] = useState(null);
+  const API_HOST = process.env.REACT_APP_API_HOST;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login(username, password);
 
-    const userDetails = await fetchWithToken(`http://localhost:8000/api/users/${username}`);
+    const userDetails = await fetchWithToken(`${API_HOST}/api/users/${username}`);
     if (userDetails) {
       setUserId(userDetails.id);
       onUserChange(userDetails); // Update userDetails in App.js
