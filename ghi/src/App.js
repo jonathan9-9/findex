@@ -1,4 +1,3 @@
-import { AuthProvider } from "@galvanize-inc/jwtdown-for-react"
 import { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import "./App.css";
