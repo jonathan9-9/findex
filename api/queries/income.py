@@ -78,7 +78,7 @@ class IncomeQueries(BaseModel):
                     # Select
                     cur.execute(
                         """
-                        SELECT id, income_title, income_amount, date, description
+                        SELECT id, income_title, income_amount, date, description, user_id
                         FROM income
                         WHERE user_id = %s
                         ORDER BY date;

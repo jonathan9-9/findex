@@ -1,15 +1,24 @@
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState } from "react";
 
-const LoginForm = () => {
+const LoginForm = ({ onUserChange }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useToken();
+  const { login, fetchWithToken } = useToken();
 
+  const [userId, setUserId] = useState(null);
+  const API_HOST = process.env.REACT_APP_API_HOST;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(username, password);
+    await login(username, password);
+
+    const userDetails = await fetchWithToken(`${API_HOST}/api/users/${username}`);
+    if (userDetails) {
+      setUserId(userDetails.id);
+      onUserChange(userDetails); // Update userDetails in App.js
+    }
+
     e.target.reset();
   };
 
