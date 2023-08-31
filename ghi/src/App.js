@@ -1,5 +1,5 @@
 import { AuthProvider } from "@galvanize-inc/jwtdown-for-react"
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, createContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import "./App.css";
 import SignupForm from "./SignupForm.js";
@@ -23,10 +23,19 @@ function App() {
   async function getIncomes() {
     const url = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`
     const data = await fetchWithToken(url);
+    setIncomes(data.incomes)
     console.log(data)
     return data;
 
   }
+
+  useEffect(() => {
+
+    if (token) {
+
+      setUser(JSON.parse(atob(token.split(".")[1])).account)
+    }
+  }, [token])
 
 
   useEffect(() => {
@@ -37,13 +46,6 @@ function App() {
     }
   }, [user.id])
 
-  useEffect(() => {
-
-    if (token) {
-
-      setUser(JSON.parse(atob(token.split(".")[1])).account)
-    }
-  }, [token])
 
 
   return (
@@ -56,7 +58,7 @@ function App() {
             <Route path="signup" element={<SignupForm />} />
             <Route index element={<MainPage />} />
             <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
-            <Route path="login" element={<LoginForm username={user} setUsername={setUser} />} />
+            <Route path="login" element={<LoginForm />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

@@ -2,6 +2,8 @@ import React, { useState, Effect, useContext } from "react";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { UserContext } from "./App";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencil, faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -47,14 +49,63 @@ function Income({ setIncomes, incomes }) {
 
 
         }
-
-
-
     }
 
     return (
         <div className="flex justify-center items-center my-14 space-x-64">
-            <div className="bg-white shadow-md p-6 rounded-md w-96">
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-4">Add new <FontAwesomeIcon icon={faPlus} /></button>
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" className="px-6 py-3">
+                                Date
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Income amount($)
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Description
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Income title
+                            </th>
+                            <th >
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {incomes && incomes.map((income, idx) => {
+                            return (
+                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={idx}>
+                                    <td className="px-6 py-4">{income.date}</td>
+                                    <td className="px-6 py-4">{income.income_amount}</td>
+                                    <td className="px-6 py-4">{income.description}</td>
+                                    <td className="px-6 py-4">{income.income_title}</td>
+                                    <td className="px-6 py-4">
+                                        <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mr-2"> <FontAwesomeIcon icon={faPencil} /></button>
+                                        <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"><FontAwesomeIcon icon={faTrashCan} /></button>
+
+                                    </td>
+
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div >
+    );
+
+}
+export default Income;
+
+
+
+{/* <div className="bg-white shadow-md p-6 rounded-md w-96">
                 <form onSubmit={handleSubmit} id="create-income-form">
                     <h1 className="text-2xl font-semibold mb-4">Add an Income</h1>
                     <div className="mb-4">
@@ -88,47 +139,11 @@ function Income({ setIncomes, incomes }) {
                         </button>
                     </div>
                 </form>
-            </div>
-            <h2 className="text-xl font-semibold mb-4">Income by Month</h2>
+            </div> */}
 
-            <div className="bg-white shadow-md rounded my-6">
-                <table className="min-w-full leading-normal">
-                    <thead>
-                        <tr>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Date
-                            </th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Income amount($)
-                            </th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Description
-                            </th>
-                            <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Income title
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {incomes.map((income, idx) => {
-                            return (
-                                <tr key={idx}>
-                                    <td>{income.date}</td>
-                                    <td>{income.income_amount}</td>
-                                    <td>{income.description}</td>
-                                    <td>{income.income_title}</td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
 
-        </div>
-    );
 
-}
-export default Income;
+
 
     // const [userInfo, setUserInfo] = useState(null);
 
