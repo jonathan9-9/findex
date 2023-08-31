@@ -19,8 +19,12 @@ class IncomeOut(BaseModel):
     id: int
     income_title: Optional[str]
     income_amount: condecimal(max_digits=10, decimal_places=2)
-    date: date  # List[int]  # List[date.month, date.year]  # T E S T ##
+    date: date
     description: Optional[str]
+
+
+class IncomeListOut(BaseModel):
+    incomes: list[IncomeOut]
 
 
 class IncomeQueries(BaseModel):
@@ -74,7 +78,7 @@ class IncomeQueries(BaseModel):
                     # Select
                     cur.execute(
                         """
-                        SELECT id, income_title, income_amount, date, description
+                        SELECT id, income_title, income_amount, date, description, user_id
                         FROM income
                         WHERE user_id = %s
                         ORDER BY date;
