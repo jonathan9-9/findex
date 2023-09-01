@@ -5,7 +5,6 @@ import SignupForm from "./SignupForm.js";
 import MainPage from "./MainPage.js";
 import Nav from "./Nav";
 import Income from "./IncomeListing";
-import AddIncome from "./AddIncomeModal";
 import './index.css';
 import LoginForm from "./LoginForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
@@ -50,7 +49,7 @@ function App() {
 
   return (
 
-    <div className="bg-gradient-to-r from-customGreenOne to-customGreenTwo bg-opacity-10 h-screen">
+    <div className="bg-darkGray">
       <UserContext.Provider value={{ user }}>
         <BrowserRouter>
           <Nav />
@@ -58,7 +57,6 @@ function App() {
             <Route path="signup" element={<SignupForm />} />
             <Route index element={<MainPage />} />
             <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
-            <Route element={<AddIncome setIncomes={setIncomes} />} />
             <Route path="login" element={<LoginForm />} />
           </Routes>
         </BrowserRouter>
