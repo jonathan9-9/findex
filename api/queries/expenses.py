@@ -4,6 +4,12 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import date
 from pydantic import condecimal
+from psycopg.errors import OperationalError
+from fastapi import HTTPException
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 class ExpenseOut(BaseModel):
@@ -36,152 +42,126 @@ class ExpenseUpdate(BaseModel):
 
 class ExpenseQueries:
     def create_expense(self, expense: ExpenseIn):
-        with pool.connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                INSERT INTO expenses (expense_amount, date, expense_category_id, description, user_id)
-                VALUES (%s, %s, %s, %s, %s)
-                RETURNING id
-                """,
-                    (
-                        expense.expense_amount,
-                        expense.date,
-                        expense.category,
-                        expense.description,
-                        expense.user_id,
-                    ),
-                )
-
-                expense_id = cur.fetchone()[0]
-
-                cur.execute(
-                    """
-                SELECT id, expense_category_name
-                FROM category
-                WHERE id = %s
-                """,
-                    (expense.category,),
-                )
-
-                category_tuple = cur.fetchone()
-
-                category_dict = {
-                    "id": category_tuple[0],
-                    "expense_category_name": category_tuple[1],
-                }
-
-                category = CategoryOut(**category_dict)
-
-                return ExpenseOut(
-                    id=expense_id,
-                    expense_amount=expense.expense_amount,
-                    category=category,
-                    category_name=category.expense_category_name,
-                    date=expense.date,
-                    user_id=expense.user_id,
-                    description=expense.description,
-                )
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO expenses (expense_amount, date, expense_category_id, description, user_id)
+                        VALUES (%s, %s, %s, %s, %s)
+                        RETURNING id
+                        """,
+                        (
+                            expense.expense_amount,
+                            expense.date,
+                            expense.category,
+                            expense.description,
+                            expense.user_id,
+                        ),
+                    )
+                    expense_id = cur.fetchone()[0]
+                    cur.execute(
+                        "SELECT id, expense_category_name FROM category WHERE id = %s",
+                        (expense.category,),
+                    )
+                    category_tuple = cur.fetchone()
+                    category_dict = {
+                        "id": category_tuple[0],
+                        "expense_category_name": category_tuple[1],
+                    }
+                    category = CategoryOut(**category_dict)
+                    return ExpenseOut(
+                        id=expense_id,
+                        expense_amount=expense.expense_amount,
+                        category_name=category.expense_category_name,
+                        date=expense.date,
+                        user_id=expense.user_id,
+                        description=expense.description,
+                    )
+        except OperationalError as e:
+            logging.error(f"Operational error: {e}")
+            raise HTTPException(
+                status_code=400, detail="Could not create expense"
+            )
+        except Exception as e:
+            logging.error(f"An unexpected error occurred: {e}")
+            raise HTTPException(
+                status_code=500, detail="Could not create expense"
+            )
 
     def update_expense(
         self, expense_id: int, user_id: int, expense_update: ExpenseUpdate
     ):
-        with pool.connection() as conn:
-            with conn.cursor() as cur:
-                category_id = expense_update.expense_category_id
-                del expense_update.expense_category_id
-
-                set_clause = ",".join(
-                    f"{field}=%s"
-                    for field in expense_update.dict(exclude_unset=True)
-                )
-
-                values = [
-                    expense_update.dict(exclude_unset=True)[f]
-                    for f in expense_update.dict(exclude_unset=True)
-                ]
-                values.append(expense_id)
-
-                query = f"""
-                    UPDATE expenses
-                    SET {set_clause}
-                    WHERE id = %s
-                    RETURNING id
-                    """
-                cur.execute(query, values)
-
-                if category_id:
-                    cur.execute(
-                        """
-                            UPDATE expenses
-                            SET expense_category_id = %s
-                            WHERE id = %s
-                        """,
-                        (category_id, expense_id),
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    set_clause = ",".join(
+                        f"{field}=%s"
+                        for field in expense_update.dict(exclude_unset=True)
                     )
-
-                cur.execute(
-                    """
-                    SELECT
-                        e.id,
-                        e.expense_amount,
-                        e.date,
-                        c.expense_category_name,
-                        e.description,
-                        e.user_id
-                    FROM expenses e
-                    LEFT JOIN category c ON e.expense_category_id = c.id
-                    WHERE e.id = %s
-                    """,
-                    (expense_id,),
-                )
-
-                row = cur.fetchone()
-
-                updated_expense = ExpenseOut(
-                    id=row[0],
-                    expense_amount=row[1],
-                    date=row[2],
-                    category_name=row[3],
-                    description=row[4],
-                    user_id=row[5],
-                )
-
-                return updated_expense
-
-    def get_all_expenses_for_user(self, user_id):
-        with pool.connection() as conn:
-            with conn.cursor() as cur:
-                query = """
-                    SELECT
-                        e.id,
-                        e.expense_amount,
-                        e.date,
-                        e.description,
-                        e.user_id,
-                        c.expense_category_name
-                    FROM expenses e
-                    LEFT JOIN category c ON e.expense_category_id = c.id
-                    WHERE e.user_id = %s
-                """
-
-                cur.execute(query, (user_id,))
-
-                results = []
-
-                for row in cur.fetchall():
-                    expense = ExpenseOut(
+                    values = [
+                        expense_update.dict(exclude_unset=True)[f]
+                        for f in expense_update.dict(exclude_unset=True)
+                    ]
+                    values.append(expense_id)
+                    cur.execute(
+                        f"UPDATE expenses SET {set_clause} WHERE id = %s RETURNING id",
+                        values,
+                    )
+                    cur.execute(
+                        "SELECT e.id, e.expense_amount, e.date, c.expense_category_name, e.description, e.user_id FROM expenses e LEFT JOIN category c ON e.expense_category_id = c.id WHERE e.id = %s",
+                        (expense_id,),
+                    )
+                    row = cur.fetchone()
+                    return ExpenseOut(
                         id=row[0],
                         expense_amount=row[1],
                         date=row[2],
-                        description=row[3],
-                        user_id=row[4],
-                        category_name=row[5],
+                        category_name=row[3],
+                        description=row[4],
+                        user_id=row[5],
                     )
+        except OperationalError as e:
+            logging.error(f"Operational error: {e}")
+            raise HTTPException(
+                status_code=400, detail="Could not update expense"
+            )
+        except Exception as e:
+            logging.error(f"An unexpected error occurred: {e}")
+            raise HTTPException(
+                status_code=500, detail="Could not update expense"
+            )
 
-                    results.append(expense)
-
-                return results
+    def get_all_expenses_for_user(self, user_id: int):
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        "SELECT e.id, e.expense_amount, e.date, e.description, e.user_id, c.expense_category_name FROM expenses e LEFT JOIN category c ON e.expense_category_id = c.id WHERE e.user_id = %s",
+                        (user_id,),
+                    )
+                    results = []
+                    for row in cur.fetchall():
+                        expense = ExpenseOut(
+                            id=row[0],
+                            expense_amount=row[1],
+                            date=row[2],
+                            description=row[3],
+                            user_id=row[4],
+                            category_name=row[5],
+                        )
+                        results.append(expense)
+                    return results
+        except OperationalError as e:
+            logging.error(f"Operational error: {e}")
+            raise HTTPException(
+                status_code=400, detail="Could not get expenses for user"
+            )
+        except Exception as e:
+            logging.error(f"An unexpected error occurred: {e}")
+            raise HTTPException(
+                status_code=500, detail="Could not get expenses for user"
+            )
 
     def execute_query(self, query, values):
         with pool.connection() as conn:
