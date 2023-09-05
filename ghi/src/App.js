@@ -9,7 +9,13 @@ import './index.css';
 import LoginForm from "./LoginForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
+
+
+
+
 export const UserContext = createContext()
+
+
 
 function App() {
 
@@ -28,6 +34,7 @@ function App() {
 
   }
 
+
   useEffect(() => {
 
     if (token) {
@@ -38,27 +45,28 @@ function App() {
 
 
   useEffect(() => {
-
     if (user.id) {
       getIncomes()
-
     }
   }, [user.id])
 
 
 
+
   return (
 
-    <div className="bg-darkGray">
+    <div className="bg-white">
       <UserContext.Provider value={{ user }}>
         <BrowserRouter>
           <Nav />
-          <Routes>
-            <Route path="signup" element={<SignupForm />} />
-            <Route index element={<MainPage />} />
-            <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
-            <Route path="login" element={<LoginForm />} />
-          </Routes>
+          <div className="h-screen">
+            <Routes>
+              <Route path="signup" element={<SignupForm />} />
+              <Route index element={<MainPage />} />
+              <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
+              <Route path="login" element={<LoginForm />} />
+            </Routes>
+          </div>
         </BrowserRouter>
       </UserContext.Provider>
     </div>

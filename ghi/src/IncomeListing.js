@@ -38,23 +38,6 @@ function Income({ setIncomes, incomes }) {
         setModalIsOpen(false);
     }
 
-    const handleDateChange = e => {
-        const value = e.target.value;
-        setDate(value)
-    }
-    const handleIncomeAmountChange = e => {
-        const value = e.target.value
-        setIncomeAmount(value)
-    }
-    const handleDescriptionChange = e => {
-        const value = e.target.value
-        setDescription(value)
-    }
-    const handleIncomeTitleChange = e => {
-        const value = e.target.value
-        setIncomeTitle(value)
-    }
-
     const handleSubmit = async event => {
         event.preventDefault();
         const data = {
@@ -135,7 +118,7 @@ function Income({ setIncomes, incomes }) {
                             <input
                                 type="date"
                                 value={date || ""}
-                                onChange={handleDateChange}
+                                onChange={(e) => setDate(e.target.value)}
                                 required
                                 className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
@@ -143,7 +126,7 @@ function Income({ setIncomes, incomes }) {
                         </div>
                         <div className="mb-4">
                             <input
-                                onChange={handleIncomeAmountChange}
+                                onChange={(e) => setIncomeAmount(e.target.value)}
                                 value={incomeAmount}
                                 placeholder="Income amount in $"
                                 required
@@ -159,7 +142,7 @@ function Income({ setIncomes, incomes }) {
                             <input
                                 type="text"
                                 value={description}
-                                onChange={handleDescriptionChange}
+                                onChange={(e) => setDescription(e.target.value)}
                                 placeholder="Enter message"
                                 id="description"
                                 name="description"
@@ -171,7 +154,7 @@ function Income({ setIncomes, incomes }) {
                             <input
                                 type="text"
                                 value={incomeTitle}
-                                onChange={handleIncomeTitleChange}
+                                onChange={(e) => setIncomeTitle(e.target.value)}
                                 placeholder="Income title"
                                 id="incomeTitle"
                                 name="incomeTitle"
