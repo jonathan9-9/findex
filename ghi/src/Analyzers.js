@@ -37,4 +37,15 @@ const populateUl = () => {
     });
 };
 
-populateUl();
+// populateUl();
+
+// // API helpers 
+// import { getIncomes, getExpenses } from './api'
+
+// // Chart data logic
+// export const fetchChartData = async () => {
+//     // Get data and calculate totals
+//     // ...
+
+//     return chartData
+// }

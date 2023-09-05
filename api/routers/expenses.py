@@ -1,8 +1,9 @@
 from authenticator import authenticator
-from fastapi import APIRouter, Depends
+from fastapi import FastAPI, APIRouter, Depends
 from fastapi.testclient import TestClient
+from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
-from main import app
+# from main import app
 from queries.expenses import (
     ExpenseOut,
     ExpenseIn,
@@ -42,6 +43,10 @@ def get_all_expenses(
     expenses = queries.get_all_expenses_for_user(user_id)
 
     if not expenses:
+        # return JSONResponse(
+        #     status_code=404,
+        #     content={"error": "Expenses not found for user"}
+        # )
         raise HTTPException(404, "No expenses found for user")
     return ExpenseListOut(expenses=expenses)
 
@@ -78,13 +83,13 @@ def delete_expense(
         return "could not delete expense"
 
 
-client = TestClient(app)
+# client = TestClient(app)
 
 
-def test_update_expense():
-    response = client.put(
-        "/expenses/1/1",
-        json={"expense_amount": 99.99}
-    )
-    assert response.status_code == 200
-    assert response.json()["expense_amount"] == 99.99
+# def test_update_expense():
+#     response = client.put(
+#         "/expenses/1/1",
+#         json={"expense_amount": 99.99}
+#     )
+#     assert response.status_code == 200
+#     assert response.json()["expense_amount"] == 99.99
