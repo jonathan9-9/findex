@@ -52,6 +52,10 @@ function App() {
 
 
 
+  const [userDetails, setUserDetails] = useState(null);
+  const handleUserChange = (newUserDetails) => {
+    setUserDetails(newUserDetails);
+  };
 
   return (
 
