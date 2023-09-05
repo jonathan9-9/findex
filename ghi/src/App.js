@@ -9,6 +9,7 @@ import Income from "./Income";
 import "./index.css";
 import LoginForm from "./LoginForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
+import ExpenseForm from "./ExpenseForm"
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
                 />
               }
             />
+            <Route path="expenses" element={<ExpenseForm userDetails={userDetails} />} />
           </Routes>
         </BrowserRouter>
       </div>

@@ -22,16 +22,14 @@ def create_expense(
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    result = queries.create_expense(expense)
-    # if result is None:
-    #     raise HTTPException(status_code=404, detail="Could not create expense")
-    # elif result.user_id != user_data["user_id"]:
-    #     raise HTTPException(
-    #         status_code=403,
-    #         detail="Unauthorized - current user id cannot create expense",
-    #     )
-    # else:
-    return result
+    if user_data["id"] != user_id:
+        raise HTTPException(status_code=403, detail="Operation not allowed")
+
+    try:
+        result = queries.create_expense(expense)
+        return result
+    except HTTPException as e:
+        raise e
 
 
 @router.get("/api/expenses/{user_id}", response_model=ExpenseListOut)
@@ -40,15 +38,16 @@ def get_all_expenses(
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    expenses = queries.get_all_expenses_for_user(user_id)
+    if user_data["id"] != user_id:
+        raise HTTPException(status_code=403, detail="Operation not allowed")
 
-    if not expenses:
-        # return JSONResponse(
-        #     status_code=404,
-        #     content={"error": "Expenses not found for user"}
-        # )
-        raise HTTPException(404, "No expenses found for user")
-    return ExpenseListOut(expenses=expenses)
+    try:
+        expenses = queries.get_all_expenses_for_user(user_id)
+        if not expenses:
+            raise HTTPException(404, "No expenses found for user")
+        return ExpenseListOut(expenses=expenses)
+    except HTTPException as e:
+        raise e
 
 
 @router.put("/api/expenses/{user_id}/{expense_id}", response_model=ExpenseOut)
@@ -59,11 +58,16 @@ def update_expense(
     queries: ExpenseQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
-    # user_id = user_data["id"]
-    updated_expense = queries.update_expense(
-        expense_id, user_id, expense_update
-    )
-    return updated_expense
+    if user_data["id"] != user_id:
+        raise HTTPException(status_code=403, detail="Operation not allowed")
+
+    try:
+        updated_expense = queries.update_expense(
+            expense_id, user_id, expense_update
+        )
+        return updated_expense
+    except HTTPException as e:
+        raise e
 
 
 @router.delete("/api/expenses/{user_id}/{expense_id}")
