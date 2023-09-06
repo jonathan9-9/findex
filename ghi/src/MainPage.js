@@ -1,13 +1,15 @@
+import React from 'react';
+
 function MainPage() {
   return (
     <div className="px-4 py-5 my-5 text-center">
-      <h1 className="display-5 fw-bold">Findex</h1>
-      <div className="col-lg-6 mx-auto">
-        <p className="lead mb-4">
-          The best financial application!
-        </p>
+      <div className="flex justify-start">
+        <div className="ml-4"> {/* Add some margin to separate the text */}
+          <h2 className="text-lg font-semibold mb-2">Empowering Financial Freedom</h2>
+        </div>
       </div>
     </div>
-  )
+  );
 }
+
 export default MainPage;
