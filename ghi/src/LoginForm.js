@@ -1,25 +1,21 @@
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState } from "react";
 
-const LoginForm = ({ onUserChange }) => {
+
+const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const { login, fetchWithToken } = useToken();
-  const [userId, setUserId] = useState(null);
-  const API_HOST = process.env.REACT_APP_API_HOST;
+  const { login } = useToken();
 
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    await login(username, password);
+    login(username, password);
 
-    const userDetails = await fetchWithToken(`${API_HOST}/api/users/${username}`);
-    if (userDetails) {
-      setUserId(userDetails.id);
-      onUserChange(userDetails); // Update userDetails in App.js
-    }
 
     e.target.reset();
   };
+
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
@@ -69,8 +65,10 @@ const LoginForm = ({ onUserChange }) => {
         </div>
       </form>
 
+
     </div>
   );
 };
+
 
 export default LoginForm;

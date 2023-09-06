@@ -6,9 +6,6 @@ import { faPencil, faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Modal from 'react-modal';
 
 
-// can also do user.username to add into path url if needed in other components
-//import UserContext, useContext into whichever component vs prop drilling
-
 const customStyles = {
     content: {
         top: '50%',
@@ -20,23 +17,28 @@ const customStyles = {
     },
 };
 
+
 function Income({ setIncomes, incomes }) {
     const { user } = useContext(UserContext)
     const { token, fetchWithToken } = useToken()
     const [modalIsOpen, setModalIsOpen] = useState(false);
+
 
     const [date, setDate] = useState(null);
     const [incomeAmount, setIncomeAmount] = useState('');
     const [description, setDescription] = useState('');
     const [incomeTitle, setIncomeTitle] = useState('');
 
+
     const openModal = () => {
         setModalIsOpen(true);
     }
 
+
     const closeModal = () => {
         setModalIsOpen(false);
     }
+
 
     const handleSubmit = async event => {
         event.preventDefault();
@@ -47,14 +49,19 @@ function Income({ setIncomes, incomes }) {
             income_title: incomeTitle
         }
 
+
         const incomeUrl = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`;
         console.log("income url:", incomeUrl)
 
+
         if (token) {
+
 
             const newIncome = await fetchWithToken(incomeUrl,
                 "POST", { 'Content-Type': 'application/json' }, { body: JSON.stringify(data) });
             console.log("new income:", newIncome)
+
+
 
 
             setDate(null);
@@ -62,9 +69,14 @@ function Income({ setIncomes, incomes }) {
             setDescription('');
             setIncomeTitle('');
             setIncomes([...incomes, newIncome]);
-
         }
+
+
+
+
     }
+
+
 
     return (
         <div className="flex justify-center items-center my-14 space-x-64">
@@ -91,6 +103,7 @@ function Income({ setIncomes, incomes }) {
                         </tr>
                     </thead>
                     <tbody>
+
 
                         {incomes.map((income, idx) => {
                             return (
@@ -176,9 +189,9 @@ function Income({ setIncomes, incomes }) {
         </div>
     );
 
+
 }
 export default Income;
-
 
 
 
@@ -202,3 +215,8 @@ export default Income;
         //     .catch(error => {
         //         console.error(error);
         //     });
+
+
+
+    // can also do user.username to add into path url if needed in other components
+//import UserContext, useContext into whichever component vs prop drilling

@@ -11,17 +11,20 @@ import useToken from "@galvanize-inc/jwtdown-for-react";
 
 
 
-
-
 export const UserContext = createContext()
+
+
 
 
 
 function App() {
 
+
   const [incomes, setIncomes] = useState([]);
   const { token, fetchWithToken } = useToken()
   const [user, setUser] = useState({});
+
+
 
 
 
@@ -32,16 +35,23 @@ function App() {
     console.log(data)
     return data;
 
+
   }
+
+
 
 
   useEffect(() => {
 
+
     if (token) {
+
 
       setUser(JSON.parse(atob(token.split(".")[1])).account)
     }
   }, [token])
+
+
 
 
   useEffect(() => {
@@ -52,12 +62,11 @@ function App() {
 
 
 
-  const [userDetails, setUserDetails] = useState(null);
-  const handleUserChange = (newUserDetails) => {
-    setUserDetails(newUserDetails);
-  };
+
+
 
   return (
+
 
     <div className="bg-white">
       <UserContext.Provider value={{ user }}>
@@ -69,13 +78,16 @@ function App() {
               <Route index element={<MainPage />} />
               <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
               <Route path="login" element={<LoginForm />} />
+
             </Routes>
           </div>
         </BrowserRouter>
       </UserContext.Provider>
     </div>
 
+
   );
 }
+
 
 export default App;

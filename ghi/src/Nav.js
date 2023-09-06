@@ -2,13 +2,19 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
+
 function Nav({ }) {
   const { token, logout } = useToken();
+
+
 
 
   const handleLogout = () => {
     logout();
   };
+
+
+
 
 
 
@@ -26,9 +32,11 @@ function Nav({ }) {
             </span>
           </div>
 
+
           <div className="left-[155px] top-[10px] absolute text-gray-700 text-[25px] font-serif">
             financial index generator
           </div>
+
 
           {!token ? (
             <>
@@ -59,6 +67,7 @@ function Nav({ }) {
               </button>
             </li>
           )}
+
 
           <li>
             <NavLink
@@ -105,5 +114,6 @@ function Nav({ }) {
     </nav>
   );
 }
+
 
 export default Nav;
