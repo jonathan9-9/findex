@@ -7,7 +7,7 @@ from queries.category import (
     CategoryQueries,
     CategoryListOut,
 )
-from typing import List, Union, Literal
+from typing import Union, Literal
 
 
 router = APIRouter()
