@@ -1,7 +1,13 @@
 from authenticator import authenticator
 from fastapi import APIRouter, Depends, HTTPException
-from queries.category import Error, CategoryIn, CategoryOut, CategoryQueries
-from typing import List, Union, Literal
+from queries.category import (
+    Error,
+    CategoryIn,
+    CategoryOut,
+    CategoryQueries,
+    CategoryListOut,
+)
+from typing import Union, Literal
 
 
 router = APIRouter()
@@ -23,7 +29,7 @@ def create_category(
 
 
 @router.get(
-    "/api/category/{user_id}", response_model=Union[List[CategoryOut], Error]
+    "/api/category/{user_id}", response_model=Union[CategoryListOut, Error]
 )
 def get_all_categories(
     user_id: int,
@@ -35,7 +41,7 @@ def get_all_categories(
     if "message" in result:
         raise HTTPException(status_code=400, detail=result["message"])
 
-    return result
+    return {"categories": result}
 
 
 @router.delete("/api/category/{user_id}", response_model=Literal[True, False])
