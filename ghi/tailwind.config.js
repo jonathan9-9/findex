@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       colors: {
         customGreen: 'rgba(106, 198, 154, 1)',
+        darkGray: 'rgba(99,102,106)',
         customLightGray: 'rgba(133, 127, 127, 1)',
         customBlue: 'rgba(90, 166, 255, 1)',
         customGreenOne: '#0F3443',

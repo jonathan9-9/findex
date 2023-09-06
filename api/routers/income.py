@@ -24,6 +24,7 @@ def create_income(
     user_data: dict = Depends(authenticator.get_current_account_data),
 ):
     # response.status_code = 400
+    print("HELLLO")
     return repo.create(income, user_id)
 
 
