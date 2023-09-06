@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from main import app
-from queries.users import UserQueries, UserIn
+from queries.users import UserQueries
 
 
 client = TestClient(app)
