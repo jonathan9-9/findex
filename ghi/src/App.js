@@ -1,48 +1,93 @@
-import { AuthProvider } from "@galvanize-inc/jwtdown-for-react";
-import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState, createContext } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import "./App.css";
 import SignupForm from "./SignupForm.js";
 import MainPage from "./MainPage.js";
 import Nav from "./Nav";
-import Income from "./Income";
-import "./index.css";
+import Income from "./IncomeListing";
+import './index.css';
 import LoginForm from "./LoginForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
 
+
+export const UserContext = createContext()
+
+
+
+
+
 function App() {
-  const [userDetails, setUserDetails] = useState(null);
-  const handleUserChange = (newUserDetails) => {
-    setUserDetails(newUserDetails);
-  };
+
+
+  const [incomes, setIncomes] = useState([]);
+  const { token, fetchWithToken } = useToken()
+  const [user, setUser] = useState({});
+
+
+
+
+
+  async function getIncomes() {
+    const url = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`
+    const data = await fetchWithToken(url);
+    setIncomes(data.incomes)
+    console.log(data)
+    return data;
+
+
+  }
+
+
+
+
+  useEffect(() => {
+
+
+    if (token) {
+
+
+      setUser(JSON.parse(atob(token.split(".")[1])).account)
+    }
+  }, [token])
+
+
+
+
+  useEffect(() => {
+    if (user.id) {
+      getIncomes()
+    }
+  }, [user.id])
+
+
+
+
+
 
   return (
-    <AuthProvider baseUrl={process.env.REACT_APP_API_HOST}>
-      <div className="bg-gradient-to-r from-customGreenOne to-customGreenTwo bg-opacity-10 h-screen">
+
+
+    <div className="bg-white">
+      <UserContext.Provider value={{ user }}>
         <BrowserRouter>
           <Nav />
-          <Routes>
-            <Route path="signup" element={<SignupForm />} />
-            <Route index element={<MainPage />} />
-            <Route
-              path="income"
-              element={<Income userDetails={userDetails} />}
-            />
-            <Route
-              path="login"
-              element={
-                <LoginForm
-                  userDetails={userDetails}
-                  onUserChange={handleUserChange}
-                />
-              }
-            />
-          </Routes>
+          <div className="h-screen">
+            <Routes>
+              <Route path="signup" element={<SignupForm />} />
+              <Route index element={<MainPage />} />
+              <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
+              <Route path="login" element={<LoginForm />} />
+
+            </Routes>
+          </div>
         </BrowserRouter>
-      </div>
-    </AuthProvider>
+      </UserContext.Provider>
+    </div>
+
+
   );
 }
+
 
 export default App;
