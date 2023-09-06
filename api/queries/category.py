@@ -21,6 +21,10 @@ class CategoryOut(BaseModel):
     expense_category_name: str
 
 
+class CategoryListOut(BaseModel):
+    categories: List[CategoryOut]
+
+
 class CategoryQueries:
     def get_all(self) -> List[CategoryOut]:
         try:
