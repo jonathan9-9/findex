@@ -70,13 +70,7 @@ function Income({ setIncomes, incomes }) {
             setIncomeTitle('');
             setIncomes([...incomes, newIncome]);
         }
-
-
-
-
     }
-
-
 
     return (
         <div className="flex justify-center items-center my-14 space-x-64">
@@ -192,31 +186,3 @@ function Income({ setIncomes, incomes }) {
 
 }
 export default Income;
-
-
-
-
-
-
-
-    // const [userInfo, setUserInfo] = useState(null);
-
-   // fetch(`${process.env.REACT_APP_API_HOST}/api/users/${user.username}`).then(response => {
-        //     if (response.ok) {
-        //         return response.json();
-        //     } else {
-        //         throw new Error('Failed to fetch users data');
-        //     }
-        // })
-        //     .then(data => {
-        //         console.log("DATA", data);
-        //         setUserInfo(data);
-        //     })
-        //     .catch(error => {
-        //         console.error(error);
-        //     });
-
-
-
-    // can also do user.username to add into path url if needed in other components
-//import UserContext, useContext into whichever component vs prop drilling

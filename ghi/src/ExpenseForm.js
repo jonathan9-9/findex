@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from "./App";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
-function ExpenseForm({ userDetails }) {
-    const [categories, setCategories] = useState([]);
+function ExpenseForm({ categories }) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [newCategory, setNewCategory] = useState("");
     const [expenseAmount, setExpenseAmount] = useState("");
@@ -14,32 +14,8 @@ function ExpenseForm({ userDetails }) {
     const [errorMessage, setErrorMessage] = useState("");
     const [dateFormat, setDateFormat] = useState('day');
 
-    useEffect(() => {
-        if (!token || !userDetails) {
-            return;
-        }
+    const { user } = useContext(UserContext)
 
-        const fetchCategories = async () => {
-            try {
-                const API_HOST = process.env.REACT_APP_API_HOST;
-                const headers = {
-                    method: "GET",
-                    Authorization: `Bearer ${token}`
-                };
-                const response = await fetch(`${API_HOST}/api/category/${userDetails.id}`, { headers });
-                if (response.ok) {
-                    const data = await response.json();
-                    setCategories(data);
-                } else {
-                    console.error("Failed to fetch categories:", response);
-                }
-            } catch (error) {
-                console.error("Error fetching categories:", error);
-            }
-        };
-
-        fetchCategories();
-    }, [token, userDetails]);
 
     const createNewCategory = async () => {
         const API_HOST = process.env.REACT_APP_API_HOST;
@@ -49,9 +25,9 @@ function ExpenseForm({ userDetails }) {
         };
         const newCategoryData = {
             expense_category_name: newCategory,
-            user_id: `${userDetails.id}`,
+            user_id: `${user.id}`,
         };
-        const categoryResponse = await fetch(`${API_HOST}/api/category/${userDetails.id}`, {
+        const categoryResponse = await fetch(`${API_HOST}/api/category/${user.id}`, {
             method: "POST",
             headers: headers,
             body: JSON.stringify(newCategoryData),
@@ -119,7 +95,7 @@ function ExpenseForm({ userDetails }) {
                 date: formattedDate,
                 category: selectedCategory === "create_new" ? null : parseInt(selectedCategory),
                 description: description,
-                user_id: `${userDetails.id}`,
+                user_id: `${user.id}`,
             };
 
             let categoryId = selectedCategory;
@@ -136,7 +112,7 @@ function ExpenseForm({ userDetails }) {
             expenseData.category = categoryId;
 
 
-            const expenseResponse = await fetch(`${API_HOST}/api/expenses/${userDetails.id}`, {
+            const expenseResponse = await fetch(`${API_HOST}/api/expenses/${user.id}`, {
                 method: "POST",
                 headers: headers,
                 body: JSON.stringify(expenseData),
@@ -252,3 +228,31 @@ function ExpenseForm({ userDetails }) {
 }
 
 export default ExpenseForm;
+
+
+  // useEffect(() => {
+    // if (!token || !userDetails) {
+    //     return;
+    // }
+
+    //     const fetchCategories = async () => {
+    //         try {
+    //             const API_HOST = process.env.REACT_APP_API_HOST;
+    //             const headers = {
+    //                 method: "GET",
+    //                 Authorization: `Bearer ${token}`
+    //             };
+    //             const response = await fetch(`${API_HOST}/api/category/${userDetails.id}`, { headers });
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 setCategories(data);
+    //             } else {
+    //                 console.error("Failed to fetch categories:", response);
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching categories:", error);
+    //         }
+    //     };
+
+    //     fetchCategories();
+    // }, [token, userDetails]);
