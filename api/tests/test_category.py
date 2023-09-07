@@ -38,6 +38,6 @@ def test_get_categories():
         assert response.json() == {"detail": "Not Found"}
     elif response.status_code == 200:
         data = response.json()
-        assert len(data) == 2
+        assert len(data["categories"]) == 2
     else:
         raise ValueError(f"Unexpected status code: {response.status_code}")
