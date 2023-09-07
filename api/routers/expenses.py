@@ -1,8 +1,7 @@
 from authenticator import authenticator
-from fastapi import FastAPI, APIRouter, Depends
-from fastapi.testclient import TestClient
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
+
 # from main import app
 from queries.expenses import (
     ExpenseOut,
@@ -85,15 +84,3 @@ def delete_expense(
     except Exception as e:
         print(e)
         return "could not delete expense"
-
-
-# client = TestClient(app)
-
-
-# def test_update_expense():
-#     response = client.put(
-#         "/expenses/1/1",
-#         json={"expense_amount": 99.99}
-#     )
-#     assert response.status_code == 200
-#     assert response.json()["expense_amount"] == 99.99
