@@ -1,9 +1,9 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
 
-function Nav({ }) {
+function Nav() {
   const { token, logout } = useToken();
 
 

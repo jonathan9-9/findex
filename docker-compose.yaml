@@ -15,7 +15,7 @@ services:
       SIGNING_KEY: ${SIGNING_KEY}
       WAIT_BEFORE: 5
       WAIT_TIMEOUT: 60
-      DATABASE_URL: postgresql://user:secret@postgres/example
+      DATABASE_URL: postgresql://user:secret@postgres/findexdb
 
     build:
       context: api
@@ -32,7 +32,7 @@ services:
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_USER: user
-      POSTGRES_DB: example
+      POSTGRES_DB: findexdb
     ports:
       - 15432:5432
 

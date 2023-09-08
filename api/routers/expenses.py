@@ -1,8 +1,6 @@
 from authenticator import authenticator
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-
-# from main import app
 from queries.expenses import (
     ExpenseOut,
     ExpenseIn,
