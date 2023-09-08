@@ -1,56 +1,52 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
+import "./Nav.css";
 
 
-function Nav({ }) {
+function Nav() {
   const { token, logout } = useToken();
-
-
-
 
   const handleLogout = () => {
     logout();
   };
 
-
-
-
-
-
   return (
-    <nav>
-      <div className="border border-neutral-600 py-2 px-2">
-        <ul className="flex justify-end items-center space-y-6 space-x-6 h-full">
-          <div className="w-[71px] h-[71px] left-2 top-0 absolute bg-red-600 rounded-[44.50px]"></div>
-          <div className="left-[102px] top-[-30px] absolute">
-            <span className="text-black text-[39px] font-semibold">
-              Fin
-            </span>
-            <span className="text-red-500 text-[39px] font-semibold">
-              Dex
-            </span>
-          </div>
-
-
-          <div className="left-[155px] top-[10px] absolute text-gray-700 text-[25px] font-serif">
-            financial index generator
-          </div>
-
+    <nav className="mt-2 mb-2">
+      <div className="py-2 px-2">
+        <ul className="flex justify-end items-center space-y-6 space-x-6 h-full relative">
+          <NavLink to="/" className="flex items-center ml-2">
+            <img
+              className="w-[65px] h-[65px] object-contain"
+              src="/FinDex.png"
+              alt="FinDex"
+            />
+            <div className="ml-1 pt-5">
+              <span className="text-slate-50 text-[30px] font-semibold custom-text-color">
+                Fin
+              </span>
+              <span className="text-emerald-300 text-[30px] font-semibold">
+                Dex
+              </span>
+            </div>
+          </NavLink>
+          <div className="flex-grow"></div>
 
           {!token ? (
             <>
-              <li>
+              <li className="animated-link">
                 <NavLink
-                  className="text-[18px] text-black font-weather no-underline hover:underline hover:text-red-500 hover:duration-500"
+
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
                   to="/login"
                 >
                   Login
                 </NavLink>
               </li>
-              <li>
+              <li className="animated-link">
                 <NavLink
-                  className="text-black text-[22px] font-weather no-underline hover:underline hover:text-red-400 hover:duration-500"
+
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
                   to="/signup"
                 >
                   Sign Up
@@ -58,62 +54,66 @@ function Nav({ }) {
               </li>
             </>
           ) : (
-            <li>
-              <button
-                className="text-black text-[16px] font-weather no-underline hover:underline hover:text-red-400 hover:duration-500"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </li>
+            <>
+              <li className="animated-link">
+                <button
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </li>
+              <li className="animated-link">
+                <NavLink
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                  to="/"
+                >
+                  Home
+                </NavLink>
+              </li>
+              <li className="animated-link">
+                <NavLink
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                  to="/income"
+                >
+                  Income
+                </NavLink>
+              </li>
+              <li className="animated-link">
+                <NavLink
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                  to="/expenses"
+                >
+                  Expenses
+                </NavLink>
+              </li>
+              <li className="animated-link">
+                <NavLink
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                  to="/analyzer"
+                >
+                  Analyzer
+                </NavLink>
+              </li>
+
+              {/* New Links */}
+              <li className="animated-link">
+                <NavLink
+                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                  to="/analyzer2"
+                >
+                  Time Analysis
+                </NavLink>
+              </li>
+              {/* End of New Links */}
+            </>
           )}
-
-
-          <li>
-            <NavLink
-              className="text-black text-[16px] font-weather no-underline hover:underline hover:text-red-400 hover:duration-500"
-              to="/"
-            >
-              Home
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className="text-black text-[16px] font-weather no-underline hover:underline hover:text-red-400 hover:duration-500"
-              to="/income"
-            >
-              My Income
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className="text-black text-[16px] font-weather no-underline hover:underline hover:text-red-400 hover:duration-500"
-              to="/expenses"
-            >
-              Expenses
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className="text-black text-[16px] font-weather no-underline hover:underline hover:text-red-400 hover:duration-500"
-              to="/analyzer"
-            >
-              Analyzer 1
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className="text-black text-[16px] font-weather no-underline hover:underline hover:text-red-400 hover:duration-500"
-              to="/analyzer2"
-            >
-              Analyzer 2
-            </NavLink>
-          </li>
+          {/* End of New Links */}
         </ul>
+        <div className="fixed bottom-0 left-0 w-full h-[1px] bg-neutral-600 opacity-70" />
       </div>
     </nav>
   );
 }
-
 
 export default Nav;

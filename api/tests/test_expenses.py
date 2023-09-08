@@ -6,21 +6,9 @@ from authenticator import authenticator
 
 client = TestClient(app)
 
-# Mock data
-expense1 = ExpenseOut(
-    id=1,
-    expense_amount=100,
-    date="2022-01-01",
-    category_name="Food",
-    user_id=1,
-)
-expense2 = ExpenseOut(
-    id=2,
-    expense_amount=200,
-    date="2022-01-02",
-    category_name="Utilites",
-    user_id=1,
-)
+
+expense1 = ExpenseOut(id=1, expense_amount=100, date='2022-01-01', category_name='Food', user_id=1)
+expense2 = ExpenseOut(id=2, expense_amount=200, date='2022-01-02', category_name='Utilites', user_id=1)
 
 
 class MockExpenseQueries:
@@ -28,11 +16,11 @@ class MockExpenseQueries:
         return [expense1, expense2]
 
 
+
 def user_override():
     return {"user_id": 1}
 
 
-# Tests
 def test_get_expenses():
     app.dependency_overrides[ExpenseQueries] = MockExpenseQueries
     app.dependency_overrides[
