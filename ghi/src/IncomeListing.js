@@ -18,7 +18,7 @@ const customStyles = {
 };
 
 
-function Income({ setIncomes, incomes }) {
+function Income({ setIncomes, incomes, getIncomes }) {
     const { user } = useContext(UserContext)
     const { token, fetchWithToken } = useToken()
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -69,6 +69,7 @@ function Income({ setIncomes, incomes }) {
             setDescription('');
             setIncomeTitle('');
             setIncomes([...incomes, newIncome]);
+            getIncomes();
         }
     }
 

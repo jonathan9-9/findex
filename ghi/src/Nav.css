@@ -1,0 +1,16 @@
+.custom-text-color {
+  color: rgba(77, 77, 77, 1);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animated-link {
+  animation: slideIn 0.65s ease-in;
+}

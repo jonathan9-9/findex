@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { UserContext } from "./App";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 
-function ExpenseForm({ categories }) {
+function ExpenseForm({ categories, getExpenses }) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [newCategory, setNewCategory] = useState("");
     const [expenseAmount, setExpenseAmount] = useState("");
@@ -127,6 +127,7 @@ function ExpenseForm({ categories }) {
                 setSelectedCategory("");
                 setNewCategory("");
                 setDescription("");
+                getExpenses();
             } else {
                 setErrorMessage("Failed to create expense.");
             }
