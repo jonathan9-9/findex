@@ -45,7 +45,7 @@ function App() {
     if (user.id) {
       getIncomes();
     }
-  }, [user.id, fetchWithToken]);
+  }, [user.id]);
 
   useEffect(() => {
     if (token) {
@@ -92,26 +92,27 @@ function App() {
       getCategories();
     }
 
-  }, [user.id, fetchWithToken]);
+  }, [user.id]);
 
-  <div className="bg-white">
-    <UserContext.Provider value={{ user }}>
-      <BrowserRouter>
-        <Nav />
-        <div className="h-screen">
-          <Routes>
-            <Route path="signup" element={<SignupForm />} />
-            <Route index element={<MainPage />} />
-            <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
-            <Route path="login" element={<LoginForm />} />
-            <Route path="expenses" element={<ExpenseForm categories={categories} setCategories={setCategories} />} />
-            <Route path="analyzer2" element={<LineChart chartData={chartData} />} />
-            <Route path="analyzer" element={<BarChart chartData={chartData} />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </UserContext.Provider>
-  </div>
+  return (
+    <div className="bg-white">
+      <UserContext.Provider value={{ user }}>
+        <BrowserRouter>
+          <Nav />
+          <div className="h-screen">
+            <Routes>
+              <Route path="signup" element={<SignupForm />} />
+              <Route index element={<MainPage />} />
+              <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} />} />
+              <Route path="login" element={<LoginForm />} />
+              <Route path="expenses" element={<ExpenseForm categories={categories} setCategories={setCategories} />} />
+              <Route path="analyzer2" element={<LineChart chartData={chartData} />} />
+              <Route path="analyzer" element={<BarChart chartData={chartData} />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </UserContext.Provider>
+    </div>
   )
 
 }
