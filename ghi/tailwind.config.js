@@ -11,7 +11,8 @@ module.exports = {
         customLightGray: 'rgba(133, 127, 127, 1)',
         customBlue: 'rgba(90, 166, 255, 1)',
         customGreenOne: '#0F3443',
-        customGreenTwo: '#34E89E'
+        customGreenTwo: '#34E89E',
+        customGrey: 'rgba(77, 77, 77, 1)',
       },
       fontFamily: {
         weather: ["Merriweather", "serif"],
