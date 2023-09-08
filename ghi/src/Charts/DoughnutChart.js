@@ -1,29 +1,80 @@
 import { Doughnut } from 'react-chartjs-2';
 
-function DoughnutChart({ chartData }) {
+function DoughnutChart({ incomeData, expenseData }) {
+
+    const incomeArray = incomeData?.datasets[0].data;
+    const expenseArray = expenseData?.datasets[0].data;
+
+    const monthlySavingsArray = incomeArray.map((income, index) => income - expenseArray[index]);
+
+    const data = {
+        labels: ['Income', 'Expenses', 'Savings'],
+        datasets: [{
+            data: [
+                incomeArray.reduce((a, b) => a + b, 0),
+                expenseArray.reduce((a, b) => a + b, 0),
+                monthlySavingsArray.reduce((a, b) => a + b, 0)
+            ],
+            backgroundColor: [
+                'rgba(46, 234, 171, 0.88)',
+                'rgba(255, 81, 81, 1)',
+                'rgba(73, 136, 239, 1.0)'
+            ]
+        }]
+    };
 
     return (
-        <div className="chart-container" style={{ width: "40%", margin: "0 auto" }}>
-
-            <h2 style={{ textAlign: "center" }}>Income Breakdown</h2>
-
+        <div style={{ textAlign: 'center', width: '40%', margin: '0 auto' }}>
             <Doughnut
-                data={chartData}
+                data={data}
                 options={{
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Income Breakdown'
-                        },
-                        legend: {
-                            position: 'bottom'
+                            text: 'Total Income, Expenses, and Savings',
+                            font: {
+                                size: 20
+                            }
                         }
                     }
                 }}
             />
-
         </div>
     );
 }
 
 export default DoughnutChart;
+
+
+
+
+
+// import { Doughnut } from 'react-chartjs-2';
+
+// function DoughnutChart({ chartData }) {
+
+//     return (
+//         <div className="chart-container" style={{ width: "40%", margin: "0 auto" }}>
+
+//             <h2 style={{ textAlign: "center" }}>Income Breakdown</h2>
+
+//             <Doughnut
+//                 data={chartData}
+//                 options={{
+//                     plugins: {
+//                         title: {
+//                             display: true,
+//                             text: 'Income Breakdown'
+//                         },
+//                         legend: {
+//                             position: 'bottom'
+//                         }
+//                     }
+//                 }}
+//             />
+
+//         </div>
+//     );
+// }
+
+// export default DoughnutChart;

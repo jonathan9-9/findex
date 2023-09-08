@@ -13,6 +13,7 @@ import Chart from "chart.js/auto"
 import { CategoryScale } from "chart.js";
 import LineChart from "./Charts/LineChart";
 import BarChart from "./Charts/BarChart";
+import DoughnutChart from "./Charts/DoughnutChart";
 import format from "date-fns/format";
 
 
@@ -164,6 +165,7 @@ function App() {
               <Route path="expenses" element={<ExpenseForm categories={categories} setCategories={setCategories} getExpenses={getExpenses} />} />
               <Route path="analyzer2" element={<LineChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
               <Route path="analyzer" element={<BarChart incomeData={incomeData} />} />
+              <Route path="analyzer3" element={<DoughnutChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
             </Routes>
           </div>
         </BrowserRouter>
