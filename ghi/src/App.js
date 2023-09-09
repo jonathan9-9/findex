@@ -39,7 +39,6 @@ function App() {
     const url = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`
     const data = await fetchWithToken(url);
     setIncomes(data.incomes)
-    // console.log("income data ->", data)
     return data;
   }
 
@@ -48,7 +47,6 @@ function App() {
     const url = `${process.env.REACT_APP_API_HOST}/api/expenses/${user.id}`
     const data = await fetchWithToken(url);
     setExpenses(data.expenses)
-    // console.log("expense data ->", data)
     return data;
   }
 
@@ -61,20 +59,20 @@ function App() {
 
   useEffect(() => {
     if (user.id) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       getExpenses()
     }
   }, [user.id])
 
   useEffect(() => {
     if (user.id) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       getIncomes()
     }
   }, [user.id]);
 
   useEffect(() => {
     if (token && incomes && expenses) {
-      // console.log("logdate", incomes.date)
-
       // Income data
       const incomeData = {
         labels: incomes.map((income) => format(new Date(income.date), 'MMM yyyy')), // format date how we want it to display
@@ -138,16 +136,18 @@ function App() {
 
   useEffect(() => {
     if (user.id) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       getCategories()
     }
   }, [user.id])
 
 
-
+  const domain = /https:\/\/[^/]+/;
+  const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
     <div className="bg-white">
       <UserContext.Provider value={{ user }}>
-        <BrowserRouter>
+        <BrowserRouter basename={basename}>
           <Nav />
           <div className="h-screen">
             <Routes>

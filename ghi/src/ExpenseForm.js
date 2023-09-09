@@ -119,7 +119,6 @@ function ExpenseForm({ categories, getExpenses }) {
             });
 
             if (expenseResponse.ok) {
-                console.log("Expense created successfully");
                 setSuccessMessage("Expense created successfully");
 
                 setExpenseAmount("");
@@ -231,29 +230,29 @@ function ExpenseForm({ categories, getExpenses }) {
 export default ExpenseForm;
 
 
-  // useEffect(() => {
-    // if (!token || !userDetails) {
-    //     return;
-    // }
+// useEffect(() => {
+// if (!token || !userDetails) {
+//     return;
+// }
 
-    //     const fetchCategories = async () => {
-    //         try {
-    //             const API_HOST = process.env.REACT_APP_API_HOST;
-    //             const headers = {
-    //                 method: "GET",
-    //                 Authorization: `Bearer ${token}`
-    //             };
-    //             const response = await fetch(`${API_HOST}/api/category/${userDetails.id}`, { headers });
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 setCategories(data);
-    //             } else {
-    //                 console.error("Failed to fetch categories:", response);
-    //             }
-    //         } catch (error) {
-    //             console.error("Error fetching categories:", error);
-    //         }
-    //     };
+//     const fetchCategories = async () => {
+//         try {
+//             const API_HOST = process.env.REACT_APP_API_HOST;
+//             const headers = {
+//                 method: "GET",
+//                 Authorization: `Bearer ${token}`
+//             };
+//             const response = await fetch(`${API_HOST}/api/category/${userDetails.id}`, { headers });
+//             if (response.ok) {
+//                 const data = await response.json();
+//                 setCategories(data);
+//             } else {
+//                 console.error("Failed to fetch categories:", response);
+//             }
+//         } catch (error) {
+//             console.error("Error fetching categories:", error);
+//         }
+//     };
 
-    //     fetchCategories();
-    // }, [token, userDetails]);
+//     fetchCategories();
+// }, [token, userDetails]);

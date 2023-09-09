@@ -7,10 +7,6 @@ function LineChart({ incomeData, expenseData }) {
     const incomeArray = incomeData?.datasets[0].data;
     const expenseArray = expenseData?.datasets[0].data;
 
-    console.log(
-        "incomedata:", incomeArray,
-        "expensedata:", expenseArray
-    )
 
     /////savings is calculated as accumulated savings for all months
     //// savings uses optinal chaining
