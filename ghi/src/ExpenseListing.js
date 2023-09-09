@@ -1,197 +1,237 @@
-import React, { useState, useContext } from "react";
-import useToken from "@galvanize-inc/jwtdown-for-react";
-import { UserContext } from "./App";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons';
-import Modal from 'react-modal';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
+import { UserContext, CategoryContext } from './App';
+import useToken from '@galvanize-inc/jwtdown-for-react';
+import { useNavigate, Routes, Route, Link } from 'react-router-dom';
+import ExpenseForm from './ExpenseForm';
+import ExpenseDetail from './ExpenseDetail';
 
+function ExpenseList() {
+    const { categories, getCategories } = useContext(CategoryContext);
+    const [expenses, setExpenses] = useState([]);
+    const { token, fetchWithToken } = useToken();
+    const { user } = useContext(UserContext);
+    const [setCreateMessage] = useState(null);
+    const [setDeleteMessage] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [showWarning, setShowWarning] = useState(false);
+    const [message, setMessage] = useState(null);
+    const [newCategory, setNewCategory] = useState("");
 
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-};
+    const handleCreateCategory = async () => {
+        try {
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
 
+            const response = await fetch(`${process.env.REACT_APP_API_HOST}/api/category/${user.id}`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ expense_category_name: newCategory })
+            });
 
-function ExpenseList({ setExpenses, expenses }) {
-
-    const { user } = useContext(UserContext)
-    const { token, fetchWithToken } = useToken()
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-
-
-    const [date, setDate] = useState(null);
-    const [expenseAmount, setExpenseAmount] = useState('');
-    const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('');
-
-
-    const openModal = () => {
-        setModalIsOpen(true);
-    }
-
-
-    const closeModal = () => {
-        setModalIsOpen(false);
-    }
-
-
-    const handleSubmit = async event => {
-        event.preventDefault();
-        const data = {
-            date: date,
-            expense_amount: expenseAmount,
-            description: description,
-            category: category
+            if (response.ok) {
+                getCategories();
+                setMessage('Category created successfully');
+                setNewCategory("");
+            } else {
+                setMessage('Failed to create category');
+            }
+        } catch (error) {
+            console.error('An error occurred:', error);
+            setMessage('An error occurred while creating the category');
         }
+    };
 
 
-        const expenseUrl = `${process.env.REACT_APP_API_HOST}/api/expenses/${user.id}`;
+    const navigate = useNavigate();
 
+    const fetchExpenses = useCallback(async () => {
+        console.log('Inside fetchExpenses');
+        console.log('user.id inside fetchExpenses:', user.id);
+        const API_HOST = process.env.REACT_APP_API_HOST;
+        const url = `${API_HOST}/api/expenses/${user.id}`;
         if (token) {
-
-            const newExpense = await fetchWithToken(expenseUrl,
-                "POST", { 'Content-Type': 'application/json' }, { body: JSON.stringify(data) });
-
-            setDate(null);
-            setExpenseAmount('');
-            setDescription('');
-            setCategory('');
-            setExpenses([...expenses, newExpense]);
+            const data = await fetchWithToken(url);
+            if (data.expenses) {
+                console.log('Received data:', data);
+                setExpenses(data.expenses);
+            } else {
+                console.error('Failed to fetch expenses');
+            }
         }
+    }, [user.id, token, fetchWithToken]);
+
+    /*useEffect(() => {
+        console.log('useEffect triggered');
+        console.log('user.id:', user.id);
+        console.log('createMessage:', createMessage);
+        console.log('deleteMessage:', deleteMessage);
+        console.log('fetchExpenses:', fetchExpenses);
+        if (user.id || createMessage || deleteMessage) {
+            console.log('Fetching expenses');  // Debugging line
+            fetchExpenses();
+            setDeleteMessage(null);  // Resetting the deleteMessage
+            setCreateMessage(null);  // Resetting the createMessage
+        }
+    }, [user.id, createMessage, deleteMessage, fetchExpenses]);*/
+
+    const handleClick = () => {
+        console.log("Dropdown clicked");
+        getCategories();
     }
+
+    const handleDeleteCategoryConfirmation = () => {
+        setShowWarning(true);
+    };
+    useEffect(() => {
+        console.log("Categories updated: ", categories);
+    }, [categories]);
+
+    const handleDeleteCategory = async (confirm) => {
+        // Debugging logs
+        console.log('handleDeleteCategory triggered');
+        console.log('Selected Category:', selectedCategory);
+        console.log('Expenses:', expenses);
+
+        const headers = {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        };
+
+        if (confirm) {
+            const deletePromises = expenses.map(expense => {
+                if (expense.category_id === selectedCategory) {
+                    const url = `${process.env.REACT_APP_API_HOST}/api/expenses/${user.id}/${expense.id}`;
+                    return fetch(url, {
+                        method: "DELETE",
+                        headers: headers,
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to delete an expense tied to the category');
+                            }
+                        });
+                }
+                return Promise.resolve();
+            });
+
+            Promise.all(deletePromises)
+                .then(async () => {  // Note the async keyword here
+                    // Now safe to delete the category
+                    const categoryUrl = `${process.env.REACT_APP_API_HOST}/api/category/${user.id}/${selectedCategory}`;
+                    const categoryDeleteResponse = await fetch(categoryUrl, {  // Now await is allowed
+                        method: "DELETE",
+                        headers: headers,
+                        body: JSON.stringify({ id: selectedCategory })  // send the category ID in the request body
+                    });
+
+                    if (categoryDeleteResponse.ok) {
+                        getCategories();  // Refresh the categories list
+                        setMessage('Category and associated expenses deleted successfully');
+                    } else {
+                        console.error('Failed to delete category');
+                        setMessage('Failed to delete category');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    setMessage('Failed to delete some expenses tied to the category');
+                    setShowWarning(false);
+                });
+        }
+
+        setShowWarning(false);
+    };
+
+
 
     return (
-        <div className="flex justify-center items-center my-14 space-x-64">
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded mb-4" onClick={openModal}>Add Expense <FontAwesomeIcon icon={faPlus} /></button>
+        <div className="flex flex-col justify-start items-center min-h-screen pt-12">
+            <Routes>
+                <Route path="/" element={
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold mb-4">Expenses</h2>
 
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                Date
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Expense Amount
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Description
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Category
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
+                        {/* Insert the alert here */}
+                        {message && <div className="alert alert-success mb-4">{message}</div>}
 
-                    <tbody>
+                        {showWarning && (
+                            <div className="alert alert-warning mb-4">
+                                <p>All expenses tied to this category will be deleted. Are you sure?</p>
+                                <button onClick={() => handleDeleteCategory(true)} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">Yes</button>
+                                <button onClick={() => handleDeleteCategory(false)} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 ml-2">No</button>
+                            </div>
+                        )}
 
-                        {expenses.map((expense, idx) => {
-                            return (
-                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={idx}>
-                                    <td className="px-6 py-4">{expense.date}</td>
-                                    <td className="px-6 py-4">{expense.expense_amount}</td>
-                                    <td className="px-6 py-4">{expense.description}</td>
-                                    <td className="px-6 py-4">{expense.category}</td>
-
-                                    <td className="px-6 py-4">
-                                        <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mr-2">
-                                            <FontAwesomeIcon icon={faPencil} />
-                                        </button>
-
-                                        <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
-                                            <FontAwesomeIcon icon={faTrashCan} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>
-
-            {
-                <Modal isOpen={modalIsOpen} onClose={closeModal} style={customStyles} appElement={document.getElementById('root')}>
-                    <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline" onClick={closeModal}>Exit</button>
-
-                    <form onSubmit={handleSubmit} id="create-expense-form">
-                        <h1 className="text-2xl font-semibold mb-4">Add an Expense</h1>
-
-                        <div className="mb-4">
-                            <input
-                                type="date"
-                                value={date || ""}
-                                onChange={(e) => setDate(e.target.value)}
-                                required
-                                className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <label htmlFor="date">Date</label>
-                        </div>
-
-                        <div className="mb-4">
-                            <input
-                                onChange={(e) => setExpenseAmount(e.target.value)}
-                                value={expenseAmount}
-                                placeholder="Expense amount"
-                                required
-                                type="number"
-                                step="0.01"
-                                id="expenseAmount"
-                                name="expenseAmount"
-                                className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <label htmlFor="expenseAmount">Expense Amount</label>
-                        </div>
-
-                        <div className="mb-4">
-                            <input
-                                type="text"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Enter description"
-                                id="description"
-                                name="description"
-                                className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <label htmlFor="description">Description</label>
-                        </div>
-
-                        <div className="mb-4">
-                            <input
-                                type="text"
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                                placeholder="Category"
-                                id="category"
-                                name="category"
-                                className="border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            />
-                            <label htmlFor="category">Category</label>
-                        </div>
-
-                        <div className="mb-4">
+                        <div className="text-center my-4">
+                            <button onClick={() => navigate("create")} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
+                                Add an Expense
+                            </button>
                             <button
-                                className="bg-black hover:bg-slate-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                type="submit"
+                                type="button"
+                                onClick={fetchExpenses}
+                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4"
                             >
-                                Create
+                                View/Update Expenses
                             </button>
                         </div>
-                    </form>
-                </Modal>
-            }
+
+
+                        <div className="flex items-center justify-center mb-4">
+                            <input
+                                type="text"
+                                placeholder="New Category"
+                                value={newCategory}
+                                onChange={e => setNewCategory(e.target.value)}
+                                className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            />
+                            <button onClick={handleCreateCategory} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">
+                                Add Category
+                            </button>
+                        </div>
+
+                        <div className="flex justify-center items-center mb-4">
+                            {/* Add the onClick event here */}
+                            <select onClick={handleClick} onChange={e => setSelectedCategory(e.target.value)} className="mr-4">
+                                <option>Select Category</option>
+                                {categories.map((category, index) => (
+                                    <option key={index} value={category.id}>
+                                        {category.expense_category_name}
+                                    </option>
+                                ))}
+                            </select>
+                            <button onClick={handleDeleteCategoryConfirmation} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                Delete Category
+                            </button>
+                        </div>
+
+                        {expenses && expenses.map(expense => {
+                            if (!expense) return null;
+                            return (
+                                <div key={expense.id} className="col-4 mb-4 card">
+                                    <div className="card-body bg-blue-200 p-4 rounded-lg">
+                                        <h5 className="text-xl font-bold mb-4">{expense.date}</h5>
+                                        <p className="text-base text-gray-700 mb-2">Expense Amount: {expense.expense_amount}</p>
+                                        <p className="text-base text-gray-700 mb-2">Description: {expense.description || 'None'}</p>
+                                        <p className="text-base text-gray-700 mb-2">Category: {expense.category_name}</p>
+                                        <div className="card-footer mt-4">
+                                            <Link to={`/expenses/${expense.id}`} className="text-blue-500 hover:underline">
+                                                Edit/Delete
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                    </div>
+                } />
+                <Route path="create" element={<ExpenseForm setCreateMessage={setCreateMessage} categories={categories} getCategories={getCategories} />} />
+                <Route path=":id" element={<ExpenseDetail setDeleteMessage={setDeleteMessage} categories={categories} getCategories={getCategories} />} />
+            </Routes>
         </div>
     );
-
-
 }
 
 export default ExpenseList;

@@ -47,6 +47,25 @@ def get_all_expenses(
         raise e
 
 
+@router.get("/api/expenses/{user_id}/{expense_id}", response_model=ExpenseOut)
+def get_single_expense(
+    user_id: int,
+    expense_id: int,
+    queries: ExpenseQueries = Depends(),
+    user_data: dict = Depends(authenticator.get_current_account_data),
+):
+    if user_data["id"] != user_id:
+        raise HTTPException(status_code=403, detail="Operation not allowed")
+
+    try:
+        expense = queries.get_single_expense_for_user(user_id, expense_id)
+        if not expense:
+            raise HTTPException(status_code=404, detail="Expense not found")
+        return expense
+    except HTTPException as e:
+        raise e
+
+
 @router.put("/api/expenses/{user_id}/{expense_id}", response_model=ExpenseOut)
 def update_expense(
     expense_id: int,

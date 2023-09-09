@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from queries.pool import pool
 from typing import List, Union
 from psycopg.errors import OperationalError, UniqueViolation, IntegrityError
+from fastapi import HTTPException
+
 import logging
 
 
@@ -96,3 +98,20 @@ class CategoryQueries:
 
     def record_to_category_out(self, record) -> CategoryOut:
         return CategoryOut(id=record[0], expense_category_name=record[1])
+
+    def has_associated_expenses(self, category_id: int) -> bool:
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        "SELECT COUNT(*) FROM expenses WHERE expense_category_id = %s",
+                        (category_id,),
+                    )
+                    count = cur.fetchone()[0]
+                    return count > 0
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail="Could not check for associated expenses",
+            )
