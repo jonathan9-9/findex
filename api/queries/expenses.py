@@ -163,6 +163,35 @@ class ExpenseQueries:
                 status_code=500, detail="Could not get expenses for user"
             )
 
+    def get_single_expense_for_user(self, user_id: int, expense_id: int):
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """SELECT e.id, e.expense_amount, e.date, e.description, e.user_id, c.expense_category_name
+                        FROM expenses e
+                        LEFT JOIN category c ON e.expense_category_id = c.id
+                        WHERE e.user_id = %s AND e.id = %s""",
+                        (user_id, expense_id),
+                    )
+                    row = cur.fetchone()
+                    if row:
+                        return ExpenseOut(
+                            id=row[0],
+                            expense_amount=row[1],
+                            date=row[2],
+                            description=row[3],
+                            user_id=row[4],
+                            category_name=row[5],
+                        )
+                    else:
+                        return None
+        except Exception as e:
+            logging.error(f"An unexpected error occurred: {e}")
+            raise HTTPException(
+                status_code=500, detail="Could not get the expense"
+            )
+
     def execute_query(self, query, values):
         with pool.connection() as conn:
             with conn.cursor() as cur:

@@ -8,17 +8,16 @@ import Income from "./IncomeListing";
 import './index.css';
 import LoginForm from "./LoginForm";
 import useToken from "@galvanize-inc/jwtdown-for-react";
-import ExpenseForm from "./ExpenseForm";
 import Chart from "chart.js/auto"
 import { CategoryScale } from "chart.js";
 import LineChart from "./Charts/LineChart";
 import BarChart from "./Charts/BarChart";
 import DoughnutChart from "./Charts/DoughnutChart";
+import ExpenseList from "./ExpenseListing";
 import format from "date-fns/format";
 
-
-
 export const UserContext = createContext()
+export const CategoryContext = createContext();
 
 Chart.register(CategoryScale);
 
@@ -63,12 +62,14 @@ function App() {
     if (user.id) {
       getExpenses()
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id])
 
   useEffect(() => {
     if (user.id) {
       getIncomes()
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id])
 
   console.log(user.id)
@@ -149,26 +150,29 @@ function App() {
     if (user.id) {
       getCategories()
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id])
 
   return (
     <div className="bg-white">
       <UserContext.Provider value={{ user }}>
-        <BrowserRouter>
-          <Nav />
-          <div className="h-screen">
-            <Routes>
-              <Route path="signup" element={<SignupForm />} />
-              <Route index element={<MainPage />} />
-              <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} getIncomes={getIncomes} />} />
-              <Route path="login" element={<LoginForm />} />
-              <Route path="expenses" element={<ExpenseForm categories={categories} setCategories={setCategories} getExpenses={getExpenses} />} />
-              <Route path="analyzer2" element={<LineChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
-              <Route path="analyzer" element={<BarChart incomeData={incomeData} />} />
-              <Route path="analyzer3" element={<DoughnutChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
+        <CategoryContext.Provider value={{ categories, getCategories }}>
+          <BrowserRouter>
+            <Nav />
+            <div className="h-screen">
+              <Routes>
+                <Route path="signup" element={<SignupForm />} />
+                <Route index element={<MainPage />} />
+                <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} getIncomes={getIncomes} />} />
+                <Route path="login" element={<LoginForm />} />
+                <Route path="expenses/*" element={<ExpenseList />} />
+                <Route path="analyzer2" element={<LineChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
+                <Route path="analyzer" element={<BarChart incomeData={incomeData} />} />
+                <Route path="analyzer3" element={<DoughnutChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
             </Routes>
-          </div>
-        </BrowserRouter>
+            </div>
+          </BrowserRouter>
+        </CategoryContext.Provider>
       </UserContext.Provider>
     </div>
 
