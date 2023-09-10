@@ -210,7 +210,7 @@ function ExpenseList() {
                                 {expenses && expenses.map(expense => {
                                     if (!expense) return null;
                                     return (
-                                        <div key={expense.id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-4">
+                                        <div key={expense.id} className="w-auto h-auto px-4 mb-4">
                                             <div className="bg-blue-200 p-4 rounded-lg">
                                                 <h5 className="text-xl font-bold mb-4">{expense.date}</h5>
                                                 <p className="text-base text-gray-700 mb-2">Expense Amount: {expense.expense_amount}</p>
