@@ -77,7 +77,6 @@ function App() {
 
   useEffect(() => {
     if (token && incomes && expenses) {
-      // Income data
       const incomeData = {
         labels: incomes.map((income) => format(new Date(income.date), 'MMM yyyy')), // format date how we want it to display
         datasets: [

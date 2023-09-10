@@ -9,7 +9,7 @@ function LineChart({ incomeData, expenseData }) {
 
 
     /////savings is calculated as accumulated savings for all months
-    //// savings uses optinal chaining
+    //// savings uses optional chaining
     let totalSavings = 0;
     const totalSavingsArray = incomeArray?.map((income, index) => {
         totalSavings += income - expenseArray[index];
