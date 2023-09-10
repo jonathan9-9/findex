@@ -44,13 +44,24 @@ def get_all_categories(
     return {"categories": result}
 
 
-@router.delete("/api/category/{user_id}", response_model=Literal[True, False])
+@router.delete(
+    "/api/category/{user_id}/{category_id}",
+    response_model=Literal[True, False],
+)
 def delete_category(
+    user_id: int,
     category_id: int,
     repo: CategoryQueries = Depends(),
     user_data: dict = Depends(authenticator.get_current_account_data),
 ) -> bool:
     try:
+        if repo.has_associated_expenses(category_id):
+            print("Category has associated expenses. Cannot delete.")
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot delete category associated with expenses",
+            )
+
         result = repo.delete(category_id)
         if (
             "message" in result

@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "./App";
 import useToken from "@galvanize-inc/jwtdown-for-react";
+import { useNavigate } from 'react-router-dom';
 
-function ExpenseForm({ categories, getExpenses }) {
+function ExpenseForm({ categories, setCreateMessage }) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [newCategory, setNewCategory] = useState("");
     const [expenseAmount, setExpenseAmount] = useState("");
@@ -13,9 +14,13 @@ function ExpenseForm({ categories, getExpenses }) {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [dateFormat, setDateFormat] = useState('day');
+    const navigate = useNavigate();
 
     const { user } = useContext(UserContext)
 
+    const handleSeeAllExpenses = () => {
+        navigate('/expenses');
+    };
 
     const createNewCategory = async () => {
         const API_HOST = process.env.REACT_APP_API_HOST;
@@ -111,7 +116,6 @@ function ExpenseForm({ categories, getExpenses }) {
 
             expenseData.category = categoryId;
 
-
             const expenseResponse = await fetch(`${API_HOST}/api/expenses/${user.id}`, {
                 method: "POST",
                 headers: headers,
@@ -121,12 +125,15 @@ function ExpenseForm({ categories, getExpenses }) {
             if (expenseResponse.ok) {
                 setSuccessMessage("Expense created successfully");
 
+                if (typeof setCreateMessage === 'function') {
+                    setCreateMessage("New expense created");
+                }
+
                 setExpenseAmount("");
                 setDate("");
                 setSelectedCategory("");
                 setNewCategory("");
                 setDescription("");
-                getExpenses();
             } else {
                 setErrorMessage("Failed to create expense.");
             }
@@ -220,6 +227,12 @@ function ExpenseForm({ categories, getExpenses }) {
                         >
                             {isLoading ? "Loading..." : "Submit"}
                         </button>
+                        <button
+                            type="button"
+                            onClick={handleSeeAllExpenses}
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">
+                            See All Expenses
+                        </button>
                     </div>
                 </form>
             </div>
@@ -228,31 +241,3 @@ function ExpenseForm({ categories, getExpenses }) {
 }
 
 export default ExpenseForm;
-
-
-// useEffect(() => {
-// if (!token || !userDetails) {
-//     return;
-// }
-
-//     const fetchCategories = async () => {
-//         try {
-//             const API_HOST = process.env.REACT_APP_API_HOST;
-//             const headers = {
-//                 method: "GET",
-//                 Authorization: `Bearer ${token}`
-//             };
-//             const response = await fetch(`${API_HOST}/api/category/${userDetails.id}`, { headers });
-//             if (response.ok) {
-//                 const data = await response.json();
-//                 setCategories(data);
-//             } else {
-//                 console.error("Failed to fetch categories:", response);
-//             }
-//         } catch (error) {
-//             console.error("Error fetching categories:", error);
-//         }
-//     };
-
-//     fetchCategories();
-// }, [token, userDetails]);
