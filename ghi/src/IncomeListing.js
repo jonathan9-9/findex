@@ -374,28 +374,31 @@ function Income({ setIncomes, incomes, getIncomes }) {
                             <th scope="col" className="px-6 py-3">
                                 Income title
                             </th>
-                            <th >
-                                Actions
-                            </th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {incomes.map((income, idx) => {
                             return (
-                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={idx}>
+                                <tr className="bg-black bg-opacity-20 border-b dark:bg-gray-800 dark:border-gray-700" key={idx}>
                                     <td className="px-6 py-4">{income.date}</td>
                                     <td className="px-6 py-4">{income.income_amount}</td>
                                     <td className="px-6 py-4">{income.description}</td>
                                     <td className="px-6 py-4">{income.income_title}</td>
                                     <td className="px-6 py-4">
-                                        <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mr-2" onClick={() => setEditingIncome(income)}> <FontAwesomeIcon icon={faPencil} /></button>
-                                        <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" onClick={() => deleteIncome(income.id)}><FontAwesomeIcon icon={faTrashCan} /></button>
+                                        <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded mr-2" onClick={() => setEditingIncome(income)}>
+                                            <FontAwesomeIcon icon={faPencil} />
+                                        </button>
+                                        <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" onClick={() => deleteIncome(income.id)}>
+                                            <FontAwesomeIcon icon={faTrashCan} />
+                                        </button>
                                     </td>
                                 </tr>
-                            )
+                            );
                         })}
                     </tbody>
                 </table>
+
             </div>
             {
                 <Modal isOpen={modalIsOpen} onClose={closeModal} style={customStyles} appElement={document.getElementById('root')}>
