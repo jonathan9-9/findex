@@ -171,7 +171,7 @@ function ExpenseList() {
                             <button
                                 type="button"
                                 onClick={fetchExpenses}
-                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4"
+                                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 mx-3 rounded mt-4"
                             >
                                 View/Update Expenses
                             </button>
@@ -205,26 +205,28 @@ function ExpenseList() {
                                 Delete Category
                             </button>
                         </div>
-
-                        {expenses && expenses.map(expense => {
-                            if (!expense) return null;
-                            return (
-                                <div key={expense.id} className="col-4 mb-4 card">
-                                    <div className="card-body bg-blue-200 p-4 rounded-lg">
-                                        <h5 className="text-xl font-bold mb-4">{expense.date}</h5>
-                                        <p className="text-base text-gray-700 mb-2">Expense Amount: {expense.expense_amount}</p>
-                                        <p className="text-base text-gray-700 mb-2">Description: {expense.description || 'None'}</p>
-                                        <p className="text-base text-gray-700 mb-2">Category: {expense.category_name}</p>
-                                        <div className="card-footer mt-4">
-                                            <Link to={`/expenses/${expense.id}`} className="text-blue-500 hover:underline">
-                                                Edit/Delete
-                                            </Link>
+                        <div className="container mx-auto">
+                            <div className="flex flex-wrap -mx-4">
+                                {expenses && expenses.map(expense => {
+                                    if (!expense) return null;
+                                    return (
+                                        <div key={expense.id} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 px-4 mb-4">
+                                            <div className="bg-blue-200 p-4 rounded-lg">
+                                                <h5 className="text-xl font-bold mb-4">{expense.date}</h5>
+                                                <p className="text-base text-gray-700 mb-2">Expense Amount: {expense.expense_amount}</p>
+                                                <p className="text-base text-gray-700 mb-2">Description: {expense.description || 'None'}</p>
+                                                <p className="text-base text-gray-700 mb-2">Category: {expense.category_name}</p>
+                                                <div className="card-footer mt-4">
+                                                    <Link to={`/expenses/${expense.id}`} className="text-blue-500 hover:underline">
+                                                        Edit/Delete
+                                                    </Link>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
                 } />
                 <Route path="create" element={<ExpenseForm setCreateMessage={setCreateMessage} categories={categories} getCategories={getCategories} />} />

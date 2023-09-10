@@ -123,7 +123,6 @@ function ExpenseForm({ categories, setCreateMessage }) {
             });
 
             if (expenseResponse.ok) {
-                console.log("Expense created successfully");
                 setSuccessMessage("Expense created successfully");
 
                 if (typeof setCreateMessage === 'function') {
@@ -187,21 +186,39 @@ function ExpenseForm({ categories, setCreateMessage }) {
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">Category</label>
-                        <select
-                            value={selectedCategory}
-                            onChange={e => setSelectedCategory(e.target.value)}
-                            className="border rounded-lg px-3 py-2 w-full focus:outline-none focus:border-blue-500"
-                        >
-                            <option value="">Select a category</option>
+                        <div className="relative">
+                            <select
+                                value={selectedCategory}
+                                onChange={e => setSelectedCategory(e.target.value)}
+                                className="border rounded-lg px-3 py-2 w-full focus:outline-none focus:border-blue-500 appearance-none"
+                            >
+                                <option value="" disabled>Select a category</option>
+                                {categories?.length > 0 &&
+                                    categories.map(category => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.expense_category_name}
+                                        </option>
+                                    ))}
+                                <option value="create_new">Create New Category</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
 
-                            {categories?.length > 0 &&
-                                categories.map(category => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.expense_category_name}
-                                    </option>
-                                ))}
-                            <option value="create_new">Create New Category</option>
-                        </select>
                         {selectedCategory === "create_new" && (
                             <input
                                 type="text"
@@ -212,6 +229,7 @@ function ExpenseForm({ categories, setCreateMessage }) {
                             />
                         )}
                     </div>
+
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
                         <textarea
@@ -231,7 +249,7 @@ function ExpenseForm({ categories, setCreateMessage }) {
                         <button
                             type="button"
                             onClick={handleSeeAllExpenses}
-                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2 mt-4">
                             See All Expenses
                         </button>
                     </div>

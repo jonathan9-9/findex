@@ -108,7 +108,7 @@ const SignupForm = () => {
           </div>
           <div>
             <button
-              className="bg-black hover:bg-gradient-to-r  from-white to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+              className="bg-customGreenTwo hover:bg-customGreen text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
               type="submit"
             >
               Register

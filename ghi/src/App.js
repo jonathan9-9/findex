@@ -16,6 +16,7 @@ import DoughnutChart from "./Charts/DoughnutChart";
 import ExpenseList from "./ExpenseListing";
 import format from "date-fns/format";
 
+
 export const UserContext = createContext()
 export const CategoryContext = createContext();
 
@@ -38,7 +39,6 @@ function App() {
     const url = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`
     const data = await fetchWithToken(url);
     setIncomes(data.incomes)
-    // console.log("income data ->", data)
     return data;
   }
 
@@ -47,7 +47,6 @@ function App() {
     const url = `${process.env.REACT_APP_API_HOST}/api/expenses/${user.id}`
     const data = await fetchWithToken(url);
     setExpenses(data.expenses)
-    // console.log("expense data ->", data)
     return data;
   }
 
@@ -60,6 +59,7 @@ function App() {
 
   useEffect(() => {
     if (user.id) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       getExpenses()
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,6 +67,7 @@ function App() {
 
   useEffect(() => {
     if (user.id) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       getIncomes()
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,8 +77,6 @@ function App() {
 
   useEffect(() => {
     if (token && incomes && expenses) {
-      // console.log("logdate", incomes.date)
-
       // Income data
       const incomeData = {
         labels: incomes.map((income) => format(new Date(income.date), 'MMM yyyy')), // format date how we want it to display
@@ -148,16 +147,20 @@ function App() {
     }
 
     if (user.id) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       getCategories()
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.id])
 
+
+  const domain = /https:\/\/[^/]+/;
+  const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
     <div className="bg-white">
       <UserContext.Provider value={{ user }}>
         <CategoryContext.Provider value={{ categories, getCategories }}>
-          <BrowserRouter>
+          <BrowserRouter basename={basename}>
             <Nav />
             <div className="h-screen">
               <Routes>
@@ -169,7 +172,7 @@ function App() {
                 <Route path="analyzer2" element={<LineChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
                 <Route path="analyzer" element={<BarChart incomeData={incomeData} />} />
                 <Route path="analyzer3" element={<DoughnutChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
-            </Routes>
+              </Routes>
             </div>
           </BrowserRouter>
         </CategoryContext.Provider>

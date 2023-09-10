@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import "./Nav.css";
+import { Dropdown, ButtonToolbar } from 'rsuite';
 
 
 function Nav() {
@@ -88,35 +89,41 @@ function Nav() {
                 </NavLink>
               </li>
               <li className="animated-link">
-                <NavLink
-                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
-                  to="/analyzer"
-                >
-                  Analyzer
-                </NavLink>
+                <ButtonToolbar>
+                  <Dropdown title="Analysis" activeKey="a">
+                    <Dropdown.Item eventKey="a">
+                      <NavLink
+                        className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                        to="/analyzer"
+                      >
+                        Income Analyzer
+                      </NavLink>
+                    </Dropdown.Item>
+                    <Dropdown.Menu eventKey="Active Menu">
+                      <Dropdown.Item eventKey="sub-analyzer">
+                        <li className="animated-link">
+                          <NavLink
+                            className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                            to="/analyzer2"
+                          >
+                            Time Analysis
+                          </NavLink>
+                        </li>
+                        <li className="animated-link">
+                          <NavLink
+                            className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                            to="/analyzer3"
+                          >
+                            Doughnut
+                          </NavLink>
+                        </li>
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </ButtonToolbar>
               </li>
-
-              {/* New Links */}
-              <li className="animated-link">
-                <NavLink
-                  className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
-                  to="/analyzer2"
-                >
-                  Time Analysis
-                </NavLink>
-              </li>
-                <li className="animated-link">
-                  <NavLink
-                    className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
-                    to="/analyzer3"
-                  >
-                    Doughnut
-                  </NavLink>
-                </li>
-              {/* End of New Links */}
             </>
           )}
-          {/* End of New Links */}
         </ul>
         <div className="fixed bottom-0 left-0 w-full h-[1px] bg-neutral-600 opacity-70" />
       </div>
