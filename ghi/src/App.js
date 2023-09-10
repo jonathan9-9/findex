@@ -12,6 +12,7 @@ import Chart from "chart.js/auto"
 import { CategoryScale } from "chart.js";
 import LineChart from "./Charts/LineChart";
 import BarChart from "./Charts/BarChart";
+import DoughnutChart from "./Charts/DoughnutChart";
 import ExpenseList from "./ExpenseListing";
 import format from "date-fns/format";
 
@@ -139,6 +140,13 @@ function App() {
   }
 
   useEffect(() => {
+
+    async function getCategories() {
+      const url = `${process.env.REACT_APP_API_HOST}/api/category/${user.id}`;
+      const data = await fetchWithToken(url);
+      setCategories(data.categories);
+    }
+
     if (user.id) {
       getCategories()
     }
@@ -160,7 +168,8 @@ function App() {
                 <Route path="expenses/*" element={<ExpenseList />} />
                 <Route path="analyzer2" element={<LineChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
                 <Route path="analyzer" element={<BarChart incomeData={incomeData} />} />
-              </Routes>
+                <Route path="analyzer3" element={<DoughnutChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
+            </Routes>
             </div>
           </BrowserRouter>
         </CategoryContext.Provider>

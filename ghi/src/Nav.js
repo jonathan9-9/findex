@@ -105,6 +105,14 @@ function Nav() {
                   Time Analysis
                 </NavLink>
               </li>
+                <li className="animated-link">
+                  <NavLink
+                    className="text-[18px] font-sans font-medium pr-4 hover:text-blue-500 active:text-green-500 custom-text-color"
+                    to="/analyzer3"
+                  >
+                    Doughnut
+                  </NavLink>
+                </li>
               {/* End of New Links */}
             </>
           )}
