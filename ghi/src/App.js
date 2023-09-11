@@ -124,8 +124,10 @@ function App() {
         ]
       };
 
+
       setIncomeData(incomeData);
       setExpenseData(expenseData);
+
     }
   }, [incomes, expenses, token]);
 
@@ -169,7 +171,7 @@ function App() {
                 <Route path="login" element={<LoginForm />} />
                 <Route path="expenses/*" element={<ExpenseList />} />
                 <Route path="analyzer2" element={<LineChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
-                <Route path="analyzer" element={<BarChart incomeData={incomeData} />} />
+                <Route path="analyzer" element={<BarChart incomeData={incomeData} expenseData={expenseData} />} />
                 <Route path="analyzer3" element={<DoughnutChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
               </Routes>
             </div>
