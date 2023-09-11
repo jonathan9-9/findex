@@ -6,6 +6,314 @@
 - Rafael Guadron
 
 ## Design
+Endpoints:
+
+1. Root
+2. Get Token
+3. Login
+4. Logout
+5. Get User
+6. Get Users
+7. Create User
+8. Delete User
+9. Get All Incomes
+10. Create Income
+11. Update Income
+12. Delete Income
+13. Get All Expenses
+14. Create Expense
+15. Get Single Expense
+16. Update Expense
+17. Delete Expense
+18. Get All Categories
+19. Create Category
+20. Delete Category
+
+Root
+- Endpoint path: /
+- Endpoint method: GET
+- Response: Message affirming you hit the root path
+- Response shape (JSON):
+  {}
+
+Get Token
+- Endpoint path: /token
+- Enpoint method: GET
+- Response: Access token and user credentials
+- Response shape (JSON):
+{
+  "access_token": "string",
+  "token_type": "Bearer",
+  "user": {
+    "id": 0,
+    "first_name": "string",
+    "last_name": "string",
+    "email": "string",
+    "username": "string"
+  }
+}
+
+Login
+- Endpoint path: /token
+- Endpoint method: POST
+- Request shape (form):
+  -username: string
+  -password: string
+- Response: Account information and a token
+- Response shape (JSON):
+{
+  "access_token": "string",
+  "token_type": "Bearer"
+}
+
+Logout
+- Endpoint path: /token
+- Enpoint method: DELETE
+- Response: True
+- Response shape (JSON):
+true
+
+Get User
+- Endpoint path: /api/users/{username}
+- Endpoint method: GET
+- Request shape (form):
+  -username: string
+- Response: User id, name, email, and username
+- Response shape (JSON):
+{
+  "id": 0,
+  "first_name": "string",
+  "last_name": "string",
+  "email": "string",
+  "username": "string"
+}
+
+Get Users
+- Endpoint path: /api/users
+- Endpoint method: GET
+- Response: User id, name, email, and username for all users
+- Response shape (JSON):
+{
+  "users": [
+    {
+      "id": 0,
+      "first_name": "string",
+      "last_name": "string",
+      "email": "string",
+      "username": "string"
+    }
+  ]
+}
+
+Create User
+- Endpoint path: /api/users
+- Enpoint method: POST
+- Request shape (form):
+{
+  "first_name": "string",
+  "last_name": "string",
+  "email": "string",
+  "username": "string",
+  "password": "string"
+}
+- Response: Created user
+- Response shape (JSON):
+{
+  "access_token": "string",
+  "token_type": "Bearer",
+  "user": {
+    "id": 0,
+    "first_name": "string",
+    "last_name": "string",
+    "email": "string",
+    "username": "string"
+  }
+}
+
+Delete User
+- Endpoint path: /api/users/{user_id}
+- Endpoint method: DELETE
+- Request shape (form):
+  -user_id: integer
+- Response: true
+- Response shape (JSON):
+true
+
+Get All Incomes
+- Endpoint path: /api/incomes/{user_id}
+- Endpoint method: GET
+- Request shape (form):
+ -user_id: integer
+- Response: All incomes for user
+- Response shape (JSON):
+{
+  "incomes": [
+    {
+      "id": 0,
+      "income_title": "string",
+      "income_amount": 0,
+      "date": "2023-09-11",
+      "description": "string"
+    }
+  ]
+}
+
+Create Income
+- Endpoint path: /api/incomes/{user_id}
+- Endpoint method: POST
+- Request shape (form):
+ -user_id: integer
+- Response: Creates income for user
+- Response shape (JSON):
+{
+  "id": 0,
+  "income_title": "string",
+  "income_amount": 0,
+  "date": "2023-09-11",
+  "description": "string"
+}
+
+Update Income
+- Endpoint path: /api/incomes/{user_id}/{income_id}
+- Endpoint method: PUT
+- Request shape (form):
+ -income_id: integer
+- Response: Updates income for user
+- Response shape (JSON):
+{
+  "id": 0,
+  "income_title": "string",
+  "income_amount": 0,
+  "date": "2023-09-11",
+  "description": "string"
+}
+
+Delete Income
+- Endpoint path: /api/incomes/{user_id}/{income_id}
+- Endpoint method: DELETE
+- Request shape (form):
+  -income_id: integer
+- Response: Deletes income for user
+- Response shape (JSON):
+true
+
+Get All Expenses
+- Endpoint path: /api/expenses/{user_id}
+- Endpoint method: GET
+- Request shape (form):
+  -user_id: integer
+- Response: Gets all expenses for user
+- Response shape (JSON):
+{
+  "expenses": [
+    {
+      "id": 0,
+      "expense_amount": 0,
+      "date": "2023-09-11",
+      "category_name": "string",
+      "description": "string",
+      "user_id": 0
+    }
+  ]
+}
+
+Create Expense
+- Endpoint path: /api/expenses/{user_id}
+- Endpoint method: POST
+- Request shape (form):
+  -user_id: integer
+- Response: Creates expenses for user
+- Response shape (JSON):
+{
+  "id": 0,
+  "expense_amount": 0,
+  "date": "2023-09-11",
+  "category_name": "string",
+  "description": "string",
+  "user_id": 0
+}
+
+Get Single Expense
+- Endpoint path: /api/expenses/{user_id}/{expense_id}
+- Endpoint method: GET
+- Request shape (form):
+  -user_id: integer
+  -expense_id: integer
+- Response: Gets single expense for user
+- Response shape (JSON):
+{
+  "id": 0,
+  "expense_amount": 0,
+  "date": "2023-09-11",
+  "category_name": "string",
+  "description": "string",
+  "user_id": 0
+}
+
+Update Expense
+- Endpoint path: /api/expenses/{user_id}/{expense_id}
+- Endpoint method: PUT
+- Request shape (form):
+  -expense_id: integer
+  -user_id: integer
+- Response: Updates expense for user
+- Response shape (JSON):
+{
+  "id": 0,
+  "expense_amount": 0,
+  "date": "2023-09-11",
+  "category_name": "string",
+  "description": "string",
+  "user_id": 0
+}
+
+Delete Expense
+- Endpoint path: /api/expenses/{user_id}/{expense_id}
+- Endpoint method: DELETE
+- Request shape (form):
+  -expense_id: integer
+  -user_id: integer
+- Response: Deletes an expense for user
+- Response shape (JSON):
+"string"
+
+Get All Categories
+- Endpoint path: /api/category/{user_id}
+- Endpoint method: GET
+- Request shape (form):
+  -user_id: integer
+- Response: Gets all expense categories for user
+- Response shape (JSON):
+{
+  "categories": [
+    {
+      "id": 0,
+      "expense_category_name": "string"
+    }
+  ]
+}
+
+Create Category
+- Endpoint path: /api/category/{user_id}
+- Endpoint method: POST
+- Request shape (form):
+  -user_id: integer
+- Response: Creates a category for user
+- Response shape (JSON):
+{
+  "id": 0,
+  "expense_category_name": "string"
+}
+
+Delete Category
+- Endpoint path: /api/category/{user_id}/{category_id}
+- Endpoint method: DELETE
+- Request shape (form):
+  -user_id: integer
+  -category_id: integer
+- Response: Deletes a category for user
+- Response shape (JSON):
+true
 
 ## Intended Market
 
