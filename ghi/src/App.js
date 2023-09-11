@@ -34,7 +34,7 @@ function App() {
 
 
 
-  //fetch income data
+  //to fetch income data
   async function getIncomes() {
     const url = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`
     const data = await fetchWithToken(url);
@@ -42,7 +42,7 @@ function App() {
     return data;
   }
 
-  ///fetch expense data
+  //fetch expense data
   async function getExpenses() {
     const url = `${process.env.REACT_APP_API_HOST}/api/expenses/${user.id}`
     const data = await fetchWithToken(url);
