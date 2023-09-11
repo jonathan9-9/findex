@@ -1,4 +1,36 @@
-# Module3 Project Gamma
+# Findex
+
+- Phil Sobrepena
+- Jonathan Cornejo
+- Tawain Lanon
+- Rafael Guadron
+
+## Design
+
+## Intended Market
+
+Our audience is all potential investors and clients that desire financial stability who are looking for a system that gives the opportunity to track their finances.
+
+## Functionality
+
+- Users to the site can add their incomes for each month period and can add as many income sources as needed
+- Users can navigate to the income analyzer that displays data in real-time of incomes of each month period as a way of visualizing all of their incomes in one view.
+- Users can view their income information through a line chart and bar chart as well as a doughnut chart to understand income patterns
+- User can add expenses by categories. i.e A user can add an expense for travel or entertainment with a specific date for that expense
+- Expense page for a list view of all expenses with their respective categories and income list view in the form of a table
+- Users can add new expenses and an expense graph to understand spending patterns
+- Users can log in or sign up into their account to get started on building financial literacy
+
+## Project Initialization
+
+To understand how the application is configured, please follow these steps:
+
+1. Clone the repository to your local machine
+2. Use the CD command to switch to the clone repo
+3. Run docker `docker volume create findex`
+4. Run `docker compose build`
+5. Run `docker compose up`
+6. Run the application on localhost:3000 and view the application through this port
 
 ## Getting started
 
