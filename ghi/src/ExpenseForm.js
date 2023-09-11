@@ -3,7 +3,7 @@ import { UserContext } from "./App";
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useNavigate } from 'react-router-dom';
 
-function ExpenseForm({ categories, setCreateMessage }) {
+function ExpenseForm({ categories, setCreateMessage, getCategories }) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [newCategory, setNewCategory] = useState("");
     const [expenseAmount, setExpenseAmount] = useState("");
@@ -15,6 +15,7 @@ function ExpenseForm({ categories, setCreateMessage }) {
     const [errorMessage, setErrorMessage] = useState("");
     const [dateFormat, setDateFormat] = useState('day');
     const navigate = useNavigate();
+
 
     const { user } = useContext(UserContext)
 
@@ -39,6 +40,7 @@ function ExpenseForm({ categories, setCreateMessage }) {
         });
         const data = await categoryResponse.json();
         if (categoryResponse.ok) {
+            getCategories();
             return data.id;
         } else {
             if (data.message === 'Category already exists') {
@@ -78,7 +80,7 @@ function ExpenseForm({ categories, setCreateMessage }) {
         setErrorMessage("");
 
         if (!isFormValid()) {
-            setErrorMessage("All fields are required.");
+            setErrorMessage("All fields are required except for description.");
             setIsLoading(false);
             return;
         }
@@ -94,12 +96,12 @@ function ExpenseForm({ categories, setCreateMessage }) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             };
-
+            const finalDescription = description === "" ? "None" : description;
             const expenseData = {
                 expense_amount: parseFloat(expenseAmount),
                 date: formattedDate,
                 category: selectedCategory === "create_new" ? null : parseInt(selectedCategory),
-                description: description,
+                description: finalDescription,
                 user_id: `${user.id}`,
             };
 
@@ -144,7 +146,7 @@ function ExpenseForm({ categories, setCreateMessage }) {
         }
     };
     const isFormValid = () => {
-        return expenseAmount && date && (selectedCategory || newCategory) && description;
+        return expenseAmount && date && (selectedCategory || newCategory);
     };
 
     return (

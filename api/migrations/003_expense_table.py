@@ -10,7 +10,7 @@ steps = [
             user_id INTEGER NOT NULL,
             expense_category_id INT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(id),
-            FOREIGN KEY (expense_category_id) REFERENCES category(id)
+            FOREIGN KEY (expense_category_id) REFERENCES category(id) ON DELETE CASCADE
             );
         """,
         ## Drop the table

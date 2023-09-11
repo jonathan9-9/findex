@@ -18,6 +18,15 @@ function ExpenseList() {
     const [newCategory, setNewCategory] = useState("");
 
     const handleCreateCategory = async () => {
+
+        if (!newCategory.trim()) {
+            setMessage('Category name cannot be empty');
+            setTimeout(() => {
+                setMessage(null);
+            }, 4000);
+
+            return;
+        }
         try {
             const headers = {
                 "Content-Type": "application/json",
@@ -33,13 +42,27 @@ function ExpenseList() {
             if (response.ok) {
                 getCategories();
                 setMessage('Category created successfully');
-                setNewCategory("");
+                setTimeout(() => {
+                    setMessage(null);
+                }, 4000);
+
+                setNewCategory("")
             } else {
                 setMessage('Failed to create category');
+
+                setTimeout(() => {
+                    setMessage(null);
+                }, 4000);
+
             }
         } catch (error) {
             console.error('An error occurred:', error);
             setMessage('An error occurred while creating the category');
+
+            setTimeout(() => {
+                setMessage(null);
+            }, 4000);
+
         }
     };
 
@@ -89,58 +112,34 @@ function ExpenseList() {
     }, [categories]);
 
     const handleDeleteCategory = async (confirm) => {
-        // Debugging logs
-        console.log('handleDeleteCategory triggered');
-        console.log('Selected Category:', selectedCategory);
-        console.log('Expenses:', expenses);
-
-        const headers = {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        };
-
         if (confirm) {
-            const deletePromises = expenses.map(expense => {
-                if (expense.category_id === selectedCategory) {
-                    const url = `${process.env.REACT_APP_API_HOST}/api/expenses/${user.id}/${expense.id}`;
-                    return fetch(url, {
-                        method: "DELETE",
-                        headers: headers,
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Failed to delete an expense tied to the category');
-                            }
-                        });
-                }
-                return Promise.resolve();
-            });
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            };
+            const categoryUrl = `${process.env.REACT_APP_API_HOST}/api/category/${user.id}/${selectedCategory}`;
 
-            Promise.all(deletePromises)
-                .then(async () => {  // Note the async keyword here
-                    // Now safe to delete the category
-                    const categoryUrl = `${process.env.REACT_APP_API_HOST}/api/category/${user.id}/${selectedCategory}`;
-                    const categoryDeleteResponse = await fetch(categoryUrl, {  // Now await is allowed
-                        method: "DELETE",
-                        headers: headers,
-                        body: JSON.stringify({ id: selectedCategory })  // send the category ID in the request body
-                    });
-
-                    if (categoryDeleteResponse.ok) {
-                        getCategories();  // Refresh the categories list
-                        setMessage('Category and associated expenses deleted successfully');
-                    } else {
-                        console.error('Failed to delete category');
-                        setMessage('Failed to delete category');
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage('Failed to delete some expenses tied to the category');
-                    setShowWarning(false);
+            try {
+                const categoryDeleteResponse = await fetch(categoryUrl, {
+                    method: "DELETE",
+                    headers: headers
                 });
-        }
 
+                if (categoryDeleteResponse.ok) {
+                    getCategories();
+                    setMessage('Category and associated expenses deleted successfully');
+                    setTimeout(() => {
+                        setMessage(null);
+                    }, 4000);
+                } else {
+                    console.error('Failed to delete category');
+                    setMessage('Failed to delete category');
+                }
+            } catch (error) {
+                console.error('Error while deleting category:', error);
+                setMessage('An error occurred while deleting the category');
+            }
+        }
         setShowWarning(false);
     };
 
@@ -186,7 +185,8 @@ function ExpenseList() {
                                 onChange={e => setNewCategory(e.target.value)}
                                 className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
-                            <button onClick={handleCreateCategory} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-4">
+                            {/* Disabled because newCategory is empty */}
+                            <button onClick={handleCreateCategory} className={`bg-green-500 font-bold py-2 px-4 rounded ml-4 ${!newCategory.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'}`} disabled={!newCategory.trim()}>
                                 Add Category
                             </button>
                         </div>
