@@ -17,7 +17,6 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         os.environ.get("CORS_HOST", "http://localhost:3000"),
-        "https://liquidators.gitlab.io/Findex",
     ],
     allow_credentials=True,
     allow_methods=["*"],
