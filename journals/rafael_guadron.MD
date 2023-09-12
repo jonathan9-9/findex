@@ -44,3 +44,10 @@ August 25, 2023
 Today I finally reworked most of the code on the queries/routers for expenses to make the protected endpoints work. I created a merge request and Phil approved it.
 
 August 28, 2023
+Today we dealt with everyones merges and had some issues dealing with merge conflicts so we spent most of the day dealing with that. 
+
+September 4, 2023
+This week we worked on our individual front end components of the website. I worked on the doughnut chart and made sure that it was fully functional with all the data being auto populated on the graphs from the form. This week we also completed most of our front-end work and deployed the webpage. We also made sure that the unit tests passed while on the deployed websites. 
+
+September 11, 2023
+Today we debugged our webpage since we had an issue with being able to see the webpage at the correct deployed url. We also made sure to catch up on all of our individual components and are ready to present our basically finished module 3 project. 
