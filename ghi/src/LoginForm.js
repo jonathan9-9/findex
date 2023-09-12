@@ -1,11 +1,13 @@
 import useToken from "@galvanize-inc/jwtdown-for-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const { login } = useToken();
+  const navigate = useNavigate()
 
 
   const handleSubmit = (e) => {
@@ -14,6 +16,7 @@ const LoginForm = () => {
 
 
     e.target.reset();
+    navigate("/");
   };
 
 
