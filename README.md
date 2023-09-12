@@ -7,6 +7,8 @@
 
 ## Design
 
+- Data Models -[category](docs\data_models\category.png) -[expenses](docs\data_models\expenses.png) -[income](docs\data_models\income.png) -[users](docs\data_models\users.png)
+
 ## Intended Market
 
 Our audience is all potential investors and clients that desire financial stability who are looking for a system that gives the opportunity to track their finances.
