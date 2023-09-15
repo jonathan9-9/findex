@@ -14,3 +14,17 @@
 .animated-link {
   animation: slideIn 0.65s ease-in;
 }
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.04);
+  z-index: 999;
+  transition: background-color 0.3s ease;
+}
+
+.navbar:hover {
+  background: rgba(255, 255, 255, 0.852);
+}

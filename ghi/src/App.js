@@ -34,7 +34,9 @@ function App() {
 
 
 
-  //to fetch income data
+
+
+  //fetch income data
   async function getIncomes() {
     const url = `${process.env.REACT_APP_API_HOST}/api/incomes/${user.id}`
     const data = await fetchWithToken(url);
@@ -124,8 +126,10 @@ function App() {
         ]
       };
 
+
       setIncomeData(incomeData);
       setExpenseData(expenseData);
+
     }
   }, [incomes, expenses, token]);
 
@@ -156,20 +160,20 @@ function App() {
   const domain = /https:\/\/[^/]+/;
   const basename = process.env.PUBLIC_URL.replace(domain, '');
   return (
-    <div className="bg-white">
+    <div>
       <UserContext.Provider value={{ user }}>
         <CategoryContext.Provider value={{ categories, getCategories }}>
           <BrowserRouter basename={basename}>
             <Nav />
-            <div className="h-screen">
+            <div className="h-screen" style={{ marginTop: '90px' }}>
               <Routes>
                 <Route path="signup" element={<SignupForm />} />
-                <Route index element={<MainPage />} />
+                <Route path="" element={<MainPage />} />
                 <Route path="income/" element={<Income incomes={incomes} setIncomes={setIncomes} getIncomes={getIncomes} />} />
                 <Route path="login" element={<LoginForm />} />
                 <Route path="expenses/*" element={<ExpenseList />} />
                 <Route path="analyzer2" element={<LineChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
-                <Route path="analyzer" element={<BarChart incomeData={incomeData} />} />
+                <Route path="analyzer" element={<BarChart incomeData={incomeData} expenseData={expenseData} />} />
                 <Route path="analyzer3" element={<DoughnutChart incomeData={incomeData} expenseData={expenseData} getIncomes={getIncomes} />} />
               </Routes>
             </div>

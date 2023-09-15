@@ -34,7 +34,6 @@ function ExpenseDetail({ setDeleted, setEdited, setDeleteMessage }) {
                     console.log("Received expense data:", data);
                     setExpense(data);
 
-
                     if (correspondingCategory && correspondingCategory.id) {
                         console.log("Setting selectedCategory to:", correspondingCategory.id.toString());
                         setSelectedCategory(correspondingCategory.id.toString());
@@ -178,10 +177,6 @@ function ExpenseDetail({ setDeleted, setEdited, setDeleteMessage }) {
             [name]: value,
         }));
     };
-
-
-
-
 
     if (!expense) return <div>No expense found with the specified ID.</div>;
 

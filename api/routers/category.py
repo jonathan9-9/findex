@@ -55,13 +55,6 @@ def delete_category(
     user_data: dict = Depends(authenticator.get_current_account_data),
 ) -> bool:
     try:
-        if repo.has_associated_expenses(category_id):
-            print("Category has associated expenses. Cannot delete.")
-            raise HTTPException(
-                status_code=400,
-                detail="Cannot delete category associated with expenses",
-            )
-
         result = repo.delete(category_id)
         if (
             "message" in result

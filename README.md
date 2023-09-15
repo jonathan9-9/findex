@@ -3,9 +3,12 @@
 - Phil Sobrepena
 - Jonathan Cornejo
 - Tawain Lanon
-- Rafael Guadron
+- Rafael Guadron - API Design
 
 ## Design
+![Alt text](<API-design.txt>)
+
+- Data Models -[category](docs\data_models\category.png) -[expenses](docs\data_models\expenses.png) -[income](docs\data_models\income.png) -[users](docs\data_models\users.png)
 
 ## Intended Market
 
